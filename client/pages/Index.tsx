@@ -464,8 +464,13 @@ export default function Index() {
 
             <div className="lg:text-right">
               <div className="text-white font-outfit text-6xl lg:text-7xl xl:text-8xl font-semibold opacity-50 mb-8">
-                ESS <span className="text-orange">+</span>
-                <div style={{ textAlign: "left" }}>BROWNE</div>
+                <div style={{ marginRight: '134px' }}>
+                  ESS{" "}
+                </div>
+                <span className="text-orange" style={{ marginLeft: '-5px' }}>+</span>
+                <div style={{ textAlign: 'left', marginLeft: '96px' }}>
+                  BROWNE
+                </div>
               </div>
 
               <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3 lg:ml-auto">
@@ -490,7 +495,7 @@ export default function Index() {
             className="text-center pt-8"
             style={{
               borderTopWidth: "1px",
-              border: "1px 0px 0px none rgb(55, 65, 81)",
+              border: "1px 0px 0px none rgb(226, 232, 240)",
             }}
           >
             <p className="text-white font-noto text-lg lg:text-xl">
