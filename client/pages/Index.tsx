@@ -464,11 +464,11 @@ export default function Index() {
 
             <div className="lg:text-right">
               <div className="text-white font-outfit text-6xl lg:text-7xl xl:text-8xl font-semibold opacity-50 mb-8">
-                <div style={{ marginRight: '134px' }}>
-                  ESS{" "}
-                </div>
-                <span className="text-orange" style={{ marginLeft: '-5px' }}>+</span>
-                <div style={{ textAlign: 'left', marginLeft: '96px' }}>
+                <div style={{ marginRight: "134px" }}>ESS </div>
+                <span className="text-orange" style={{ marginLeft: "-5px" }}>
+                  +
+                </span>
+                <div style={{ textAlign: "left", marginLeft: "96px" }}>
                   BROWNE
                 </div>
               </div>

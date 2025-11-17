@@ -1,4 +1,9 @@
-import { useMotionTemplate, useMotionValue, useScroll, useTransform } from "framer-motion";
+import {
+  useMotionTemplate,
+  useMotionValue,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 
 export function useScrollAnimation() {
