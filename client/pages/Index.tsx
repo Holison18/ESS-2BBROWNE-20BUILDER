@@ -4,7 +4,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-4 lg:py-6">
             <img 
@@ -34,7 +34,7 @@ export default function Index() {
         </div>
         
         <div className="container mx-auto px-4 lg:px-20 relative z-10">
-          <div className="max-w-6xl">
+          <div style={{ maxWidth: '1089px' }}>
             <div className="bg-text-color inline-block px-4 py-2 lg:px-6 lg:py-3 mb-4 lg:mb-6">
               <h2 className="text-home-button font-montserrat text-2xl lg:text-4xl xl:text-5xl font-bold">FROM</h2>
             </div>
@@ -66,7 +66,7 @@ export default function Index() {
       {/* About Section */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center" style={{ marginRight: '200px' }}>
             <div>
               <h2 className="text-text-color font-outfit text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
                 ESS + <span className="text-orange">BROWNE</span>
@@ -91,7 +91,7 @@ export default function Index() {
               </div>
               
               <div>
-                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-75">50+</div>
+                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-75" style={{ paddingRight: '200px', marginRight: '33px' }}>50+</div>
                 <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light">Projects</p>
               </div>
               
