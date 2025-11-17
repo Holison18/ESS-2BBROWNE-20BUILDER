@@ -121,3 +121,18 @@
     white-space: pre;
   }
 }
+
+@layer components {
+  .main-footer {
+    background-color: #151515;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 29px,
+      rgba(190, 190, 190, 0.05) 29px,
+      rgba(190, 190, 190, 0.05) 30px
+    );
+    background-size: cover;
+    background-position: center;
+  }
+}

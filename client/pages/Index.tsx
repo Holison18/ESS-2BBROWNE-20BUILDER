@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import heroVideo from "../assets/backgroundvid.mp4";
 
 export default function Index() {
   return (
@@ -12,7 +13,7 @@ export default function Index() {
               alt="ESS + BROWNE"
               className="h-12 lg:h-16 w-auto"
             />
-            <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg">
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 text-white font-noto text-base lg:text-lg">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -37,30 +38,36 @@ export default function Index() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-24 lg:pt-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('https://api.builder.io/api/v1/image/assets/TEMP/1a51e03ef87e88ec77025f1b14cbe54ca8beb30e?width=3456')",
-          }}
-        >
-          <div className="absolute inset-0 bg-white/40"></div>
+      <section className="relative min-h-screen flex items-center pt-24 lg:pt-0 overflow-hidden">
+        {/* VIDEO BACKGROUND START */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+          {/* Overlay (Keeps text readable) */}
+          <div className="absolute inset-0"></div>
         </div>
+        {/* VIDEO BACKGROUND END */}
 
         <div className="container mx-auto px-4 lg:px-20 relative z-10">
           <div style={{ maxWidth: "1089px" }}>
             <div className="bg-text-color inline-block px-4 py-2 lg:px-6 lg:py-3 mb-4 lg:mb-6">
-              <h2 className="text-home-button font-montserrat text-2xl lg:text-4xl xl:text-5xl font-bold">
+              <h2 className="text-home-button font-outfit text-2xl lg:text-4xl xl:text-5xl font-bold">
                 FROM
               </h2>
             </div>
 
-            <h1 className="text-text-color font-outfit text-5xl lg:text-7xl xl:text-8xl font-bold mb-4 lg:mb-6">
+            <h1 className="text-white font-outfit text-5xl lg:text-7xl xl:text-8xl font-bold mb-4 lg:mb-6">
               Concept to Creation<span className="text-orange">.</span>
             </h1>
 
-            <p className="text-text-color font-noto text-lg lg:text-2xl font-bold mb-8 lg:mb-12">
+            <p className="text-white font-noto text-lg lg:text-2xl font-bold mb-8 lg:mb-12">
               Building your Beautiful{" "}
               <span className="text-orange">Dreams</span>
             </p>
@@ -70,7 +77,7 @@ export default function Index() {
                 Contact Us
               </button>
 
-              <button className="flex items-center gap-2 text-text-color font-noto text-lg lg:text-xl underline hover:text-orange transition-colors">
+              <button className="flex items-center gap-2 text-white font-noto text-lg lg:text-xl underline hover:text-orange transition-colors">
                 View projects
                 <svg
                   width="32"
@@ -104,6 +111,13 @@ export default function Index() {
                 <span className="text-text-color">i</span>s a design and
                 architecture firm shaping spaces from Kumasi -{" "}
                 <span className="text-orange">Ghana</span>
+              </p>
+
+              <p className="text-text-grey-2 font-noto text-xl">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
+                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
+                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                urna tempor. torquent per conubia nostra inceptos himenaeos.
               </p>
 
               <button className="border border-text-color rounded-full px-8 py-3 text-text-color font-noto text-xl hover:bg-text-color hover:text-white transition-colors flex items-center gap-3">
@@ -156,6 +170,21 @@ export default function Index() {
 
           {/* Partner Logos */}
           <div className="mt-16 lg:mt-24 flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190"
+              alt="Partner"
+              className="h-16 lg:h-20 w-auto opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204"
+              alt="Partner"
+              className="h-16 lg:h-20 w-auto opacity-60 hover:opacity-100 transition-opacity"
+            />
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290"
+              alt="Partner"
+              className="h-16 lg:h-20 w-auto opacity-60 hover:opacity-100 transition-opacity"
+            />
             <img
               src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190"
               alt="Partner"
@@ -339,9 +368,10 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#151515] py-16 lg:py-24">
+      <footer className="main-footer pt-24 pb-8 lg:pt-32 lg:pb-12">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16 mb-12">
+            {/* Head Office */}
             <div className="space-y-8">
               <div>
                 <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-4">
@@ -368,11 +398,12 @@ export default function Index() {
               </div>
             </div>
 
+            {/* Socials & Button */}
             <div>
               <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-6">
                 Socials
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-4 mb-8">
                 <a
                   href="#"
                   className="flex items-center gap-3 text-white font-noto text-lg lg:text-xl hover:text-orange transition-colors"
@@ -456,19 +487,8 @@ export default function Index() {
                   YouTube
                 </a>
               </div>
-            </div>
 
-            <div className="lg:text-right">
-              <div className="text-white font-outfit text-6xl lg:text-7xl xl:text-8xl font-semibold opacity-50 mb-8">
-                <div style={{ marginRight: "134px" }}>ESS </div>
-
-                <div style={{ textAlign: "left", marginLeft: "96px" }}>
-                  <span className="text-orange">+</span>
-                  BROWNE
-                </div>
-              </div>
-
-              <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3 lg:ml-auto">
+              <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3">
                 Send Message
                 <svg
                   width="32"
@@ -484,10 +504,24 @@ export default function Index() {
                 </svg>
               </button>
             </div>
+
+            {/* Logo Right Aligned (to balance the Left Aligned Head Office) */}
+            <div className="flex flex-col items-start lg:items-end mt-8 lg:mt-0">
+              <div className="font-outfit font-black text-6xl lg:text-8xl leading-[0.85] opacity-50 text-[#BEBEBE] hover:opacity-100 transition-opacity cursor-default text-left">
+                {/* Line 1 */}
+                <div className="block">ESS</div>
+
+                {/* Line 2 */}
+                <div className="flex items-center whitespace-nowrap">
+                  <span className="text-orange mr-4">+</span>
+                  <span>BROWNE</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="text-center pt-5">
-            <p className="text-text-grey font-noto text-md lg:text-lg">
+          <div className="text-center pt-8">
+            <p className="text-text-grey font-noto text-md lg:text-md">
               Copyright 2025. ESS+BROWNE
             </p>
           </div>
