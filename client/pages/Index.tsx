@@ -66,7 +66,7 @@ export default function Index() {
       {/* About Section */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center" style={{ marginRight: '200px' }}>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <h2 className="text-text-color font-outfit text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
                 ESS + <span className="text-orange">BROWNE</span>
@@ -86,7 +86,7 @@ export default function Index() {
             
             <div className="space-y-6 lg:space-y-8">
               <div>
-                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-95">10+</div>
+                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-95" style={{ alignSelf: 'stretch', flexGrow: '0' }}>10+</div>
                 <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light">Years of Experience</p>
               </div>
               
