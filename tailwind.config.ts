@@ -13,7 +13,19 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        outfit: ['Outfit', 'sans-serif'],
+        noto: ['Noto Sans', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
       colors: {
+        orange: '#F79723',
+        'text-color': '#474747',
+        'home-button': '#BEBEBE',
+        'text-black': '#363535',
+        'text-grey': '#8F8F8F',
+        'text-grey-2': '#837D78',
+        'home-button-color': '#B9B9B9',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
