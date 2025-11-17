@@ -94,7 +94,8 @@ export default function Index() {
       <section className="py-16 lg:py-24 bg-white">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
+            {/* Left Column: Text */}
+            <div className="space-y-8" style={{ marginLeft: "130px" }}>
               <h2 className="text-text-color font-outfit text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
                 ESS + <span className="text-orange">BROWNE</span>
               </h2>
@@ -122,36 +123,31 @@ export default function Index() {
               </button>
             </div>
 
-            <div className="space-y-6 lg:space-y-8">
-              <div>
-                <div
-                  className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-95"
-                  style={{ alignSelf: "stretch", flexGrow: "0" }}
-                >
+            {/* Stats Column - Changed alignment to 'items-center' to fill the space */}
+            <div className="space-y-8 flex flex-col items-center">
+              <div className="flex flex-col items-center">
+                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-95 leading-none">
                   10+
                 </div>
-                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light">
+                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light mt-2">
                   Years of Experience
                 </p>
               </div>
 
-              <div>
-                <div
-                  className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-75"
-                  style={{ paddingRight: "200px", marginRight: "33px" }}
-                >
+              <div className="flex flex-col items-center">
+                <div className="text-text-black font-outfit text-7xl lg:text-8xl xl:text-9xl font-black opacity-75 leading-none">
                   50+
                 </div>
-                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light">
+                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light mt-2">
                   Projects
                 </p>
               </div>
 
-              <div>
-                <div className="text-text-grey font-outfit text-7xl lg:text-8xl xl:text-9xl font-black">
+              <div className="flex flex-col items-center">
+                <div className="text-text-grey font-outfit text-7xl lg:text-8xl xl:text-9xl font-black leading-none">
                   15+
                 </div>
-                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light">
+                <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light mt-2">
                   Clients
                 </p>
               </div>
@@ -465,10 +461,9 @@ export default function Index() {
             <div className="lg:text-right">
               <div className="text-white font-outfit text-6xl lg:text-7xl xl:text-8xl font-semibold opacity-50 mb-8">
                 <div style={{ marginRight: "134px" }}>ESS </div>
-                <span className="text-orange" style={{ marginLeft: "-5px" }}>
-                  +
-                </span>
+
                 <div style={{ textAlign: "left", marginLeft: "96px" }}>
+                  <span className="text-orange">+</span>
                   BROWNE
                 </div>
               </div>
@@ -491,14 +486,8 @@ export default function Index() {
             </div>
           </div>
 
-          <div
-            className="text-center pt-8"
-            style={{
-              borderTopWidth: "1px",
-              border: "1px 0px 0px none rgb(226, 232, 240)",
-            }}
-          >
-            <p className="text-white font-noto text-lg lg:text-xl">
+          <div className="text-center pt-5">
+            <p className="text-text-grey font-noto text-md lg:text-lg">
               Copyright 2025. ESS+BROWNE
             </p>
           </div>
