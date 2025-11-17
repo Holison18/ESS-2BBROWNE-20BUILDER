@@ -8,17 +8,31 @@ export default function About() {
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-4 lg:py-6">
             <Link to="/">
-              <img 
-                src="https://api.builder.io/api/v1/image/assets/TEMP/519c10e29b96eec6b8ba3cbfb8a1008fe2b40cff?width=772" 
-                alt="ESS + BROWNE" 
+              <img
+                src="https://api.builder.io/api/v1/image/assets/TEMP/519c10e29b96eec6b8ba3cbfb8a1008fe2b40cff?width=772"
+                alt="ESS + BROWNE"
                 className="h-12 lg:h-16 w-auto"
               />
             </Link>
             <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg">
-              <Link to="/" className="hover:text-orange transition-colors">HOME</Link>
-              <Link to="/about" className="text-orange">ABOUT US</Link>
-              <Link to="/portfolio" className="hover:text-orange transition-colors">PORTFOLIO</Link>
-              <Link to="/contact" className="hover:text-orange transition-colors">CONTACT</Link>
+              <Link to="/" className="hover:text-orange transition-colors">
+                HOME
+              </Link>
+              <Link to="/about" className="text-orange">
+                ABOUT US
+              </Link>
+              <Link
+                to="/portfolio"
+                className="hover:text-orange transition-colors"
+              >
+                PORTFOLIO
+              </Link>
+              <Link
+                to="/contact"
+                className="hover:text-orange transition-colors"
+              >
+                CONTACT
+              </Link>
             </div>
           </div>
         </div>
@@ -31,9 +45,10 @@ export default function About() {
             About <span className="text-orange">Us</span>
           </h1>
           <p className="text-text-color font-noto text-xl lg:text-2xl mb-8">
-            This page is coming soon. Continue prompting to fill in this page content.
+            This page is coming soon. Continue prompting to fill in this page
+            content.
           </p>
-          <Link 
+          <Link
             to="/"
             className="inline-block bg-orange hover:bg-orange/90 transition-colors rounded-full px-8 py-4 text-white font-noto text-lg"
           >
