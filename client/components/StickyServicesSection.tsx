@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 interface ServiceCard {
   number: string;
@@ -42,77 +43,81 @@ export default function StickyServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section ref={containerRef} className="relative py-24 lg:py-32">
+    <section ref={containerRef} className="relative bg-white py-24 lg:py-32">
       <div className="container mx-auto px-4 lg:px-20">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* Sticky Text Section */}
-          <div className="lg:sticky lg:top-32 h-fit">
-            <div className="max-w-xl">
-              <h2 className="text-text-color font-outfit text-4xl lg:text-5xl xl:text-6xl font-semibold mb-6 leading-tight">
-                What are the services we{" "}
-                <span className="text-orange">provide?</span>
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+          
+          {/* LEFT COLUMN (Sticky Title) */}
+          <div className="lg:w-1/3">
+            <div className="sticky top-32">
+              <h2 className="text-text-color font-outfit text-4xl lg:text-6xl font-bold leading-tight mb-6">
+                What are the services we <span className="text-orange">provide?</span>
               </h2>
-              <p className="text-text-color font-noto text-xl lg:text-2xl">
+              <p className="text-text-grey font-noto text-lg lg:text-xl max-w-sm">
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
               </p>
             </div>
           </div>
 
-          {/* Scrolling Cards Section */}
-          <div className="space-y-44">
+          {/* RIGHT COLUMN (Scrolling Cards) */}
+          <div className="lg:w-2/3 space-y-24">
             {services.map((service, index) => (
               <ServiceCard key={index} service={service} index={index} />
             ))}
           </div>
+
         </div>
       </div>
     </section>
   );
 }
 
-function ServiceCard({
-  service,
-  index,
-}: {
-  service: ServiceCard;
-  index: number;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
+function ServiceCard({ service, index }: { service: ServiceCard; index: number }) {
   return (
-    <div
-      ref={cardRef}
-      className="relative rounded-lg overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-105"
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group relative mb-24 last:mb-0"
     >
-      <div
-        className="relative h-[600px] lg:h-[700px] p-8 lg:p-12 flex flex-col justify-end"
-        style={{ backgroundColor: service.bgColor }}
-      >
-        {/* Background Image */}
-        <div className="absolute inset-0 p-2 opacity-90">
-          <img
-            src={service.image}
-            alt={service.title}
-            className="w-full h-auto object-cover border-4 border-white"
-            style={{ maxHeight: "50%" }}
-          />
-        </div>
+      {/* Image Container - Taller and cleaner */}
+      <div className="relative w-full h-[350px] lg:h-[500px] overflow-hidden rounded-xl">
+        <img
+          src={service.image}
+          alt={service.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+        />
+        {/* Gradient Overlay to make text pop if it overlaps */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60" />
+      </div>
 
-        {/* Content */}
-        <div className="relative z-10 mt-auto">
-          <div className="flex items-start justify-between mb-4">
-            <h3 className="text-white font-outfit text-4xl lg:text-5xl font-semibold uppercase">
-              {service.title}
-            </h3>
-            <span className="text-white/50 font-outfit text-8xl lg:text-9xl font-semibold leading-none">
+      {/* Content Box - Floating card style */}
+      <div className="relative z-10 mx-4 -mt-16 lg:-mt-32 lg:ml-12 lg:mr-0 lg:w-[90%] bg-[#212121] p-8 lg:p-12 rounded-lg shadow-2xl border-t border-white/10">
+        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
+          
+          {/* Title and Number Wrapper */}
+          <div className="relative">
+             {/* Big Number - Background Layer */}
+            <span className="absolute -top-10 -left-6 text-8xl lg:text-9xl font-black text-white/5 select-none pointer-events-none z-0">
               {service.number}
             </span>
+            
+            {/* Title - Foreground */}
+            <h3 className="relative z-10 font-outfit text-3xl lg:text-5xl font-bold uppercase tracking-wider text-white">
+              {service.title}
+            </h3>
           </div>
-          <p className="text-[#E3E3E3] font-noto text-lg lg:text-xl leading-relaxed max-w-2xl">
-            {service.description}
-          </p>
         </div>
+
+        {/* Description */}
+        <p className="text-gray-400 font-noto text-lg lg:text-xl leading-relaxed max-w-2xl">
+          {service.description}
+        </p>
+        
+        {/* Decorative Line */}
+        <div className="w-16 h-1 bg-orange mt-8" />
       </div>
-    </div>
+    </motion.div>
   );
 }

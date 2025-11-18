@@ -73,11 +73,17 @@ export default function Index() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
-              <button className="bg-home-button-color hover:bg-orange transition-colors rounded-full px-8 lg:px-12 py-3 lg:py-4 text-text-color font-noto text-lg lg:text-xl">
+              <Link
+                to="/contact"
+                className="bg-home-button-color hover:bg-orange transition-colors rounded-full px-8 lg:px-12 py-3 lg:py-4 text-text-color font-noto text-lg lg:text-xl inline-flex justify-center items-center"
+              >
                 Contact Us
-              </button>
+              </Link>
 
-              <button className="flex items-center gap-2 text-white font-noto text-lg lg:text-xl underline hover:text-orange transition-colors">
+              <Link
+                to="/portfolio"
+                className="flex items-center gap-2 text-white font-noto text-lg lg:text-xl underline hover:text-orange transition-colors"
+              >
                 View projects
                 <svg
                   width="32"
@@ -91,7 +97,7 @@ export default function Index() {
                     fill="currentColor"
                   />
                 </svg>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -120,7 +126,10 @@ export default function Index() {
                 urna tempor. torquent per conubia nostra inceptos himenaeos.
               </p>
 
-              <button className="border border-text-color rounded-full px-8 py-3 text-text-color font-noto text-xl hover:bg-text-color hover:text-white transition-colors flex items-center gap-3">
+              <Link
+                to="/about"
+                className="border border-text-color rounded-full px-8 py-3 text-text-color font-noto text-xl hover:bg-text-color hover:text-white transition-colors flex items-center gap-3 inline-flex"
+              >
                 More About Us
                 <svg
                   width="32"
@@ -134,7 +143,7 @@ export default function Index() {
                     fill="currentColor"
                   />
                 </svg>
-              </button>
+              </Link>
             </div>
 
             {/* Stats Column - Changed alignment to 'items-center' to fill the space */}

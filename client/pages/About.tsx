@@ -44,14 +44,13 @@ export default function About() {
       <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-            
             {/* Left Content */}
             <div className="relative">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time in view
               >
                 <h1 className="text-text-color font-outfit text-5xl lg:text-7xl xl:text-8xl font-semibold leading-tight mb-8 uppercase relative z-10">
                   Designing Quality Buildings{" "}
@@ -59,13 +58,13 @@ export default function About() {
                 </h1>
               </motion.div>
 
-              {/* Decorative Small Circle - Repositioned Tighter */}
+              {/* Decorative Small Circle */}
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                viewport={{ once: true }}
-                className="absolute right-0 top-0 lg:-right-4 lg:-top-8 hidden lg:block -z-0"
+                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
+                className="absolute right-0 top-6 lg:-right-4 lg:-top-8 hidden lg:block -z-0"
               >
                 <svg
                   width="118"
@@ -81,30 +80,36 @@ export default function About() {
 
             {/* Right Content */}
             <div className="relative flex justify-center items-center py-12 lg:py-0">
-              {/* Large Circle Background - Rotating slowly for effect */}
+              {/* Large Circle Background */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
                 className="absolute inset-0 flex justify-center items-center pointer-events-none"
               >
-                 <svg
+                <svg
                   className="w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] animate-[spin_60s_linear_infinite]"
                   viewBox="0 0 373 373"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <circle cx="186.5" cy="186.5" r="186" stroke="#F79723" strokeWidth="1" />
+                  <circle
+                    cx="186.5"
+                    cy="186.5"
+                    r="186"
+                    stroke="#F79723"
+                    strokeWidth="1"
+                  />
                 </svg>
               </motion.div>
 
               {/* Text Content inside Circle */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
                 className="relative z-10 text-center max-w-sm mx-auto"
               >
                 <h2 className="text-text-color font-outfit text-3xl lg:text-4xl font-semibold mb-4 uppercase">
@@ -112,12 +117,11 @@ export default function About() {
                 </h2>
                 <p className="text-text-color font-noto text-base lg:text-lg leading-relaxed">
                   Lorem ipsum dolor sit amet consectetur adipiscing elit.
-                  Quisque faucibus ex sapien vitae pellentesque sem placerat.
-                  In id cursus mi pretium tellus duis convallis.
+                  Quisque faucibus ex sapien vitae pellentesque sem placerat. In
+                  id cursus mi pretium tellus duis convallis.
                 </p>
               </motion.div>
             </div>
-
           </div>
         </div>
       </section>
@@ -126,19 +130,18 @@ export default function About() {
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="relative">
-            
             {/* Image - Slides in from Left */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }} // Changed: Plays every time
               className="lg:w-[90%]"
             >
               <img
                 src="https://api.builder.io/api/v1/image/assets/TEMP/f7911c2cd6af9a222083e11bd356af2391980400?width=2794"
                 alt="Architecture project"
-                className="w-full h-[400px] lg:h-[700px] object-cover rounded-lg grayscale" 
+                className="w-full h-[400px] lg:h-[700px] object-cover rounded-lg grayscale"
               />
             </motion.div>
 
@@ -147,7 +150,7 @@ export default function About() {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }} // Changed: Plays every time
               className="relative mt-[-40px] lg:mt-0 lg:absolute lg:bottom-12 lg:right-0 lg:max-w-xl z-10 px-4 lg:px-0"
             >
               <div className="bg-text-color p-8 lg:p-12 rounded-lg shadow-xl">
@@ -158,7 +161,6 @@ export default function About() {
                 </p>
               </div>
             </motion.div>
-
           </div>
         </div>
       </section>
