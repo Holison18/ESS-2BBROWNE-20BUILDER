@@ -205,9 +205,10 @@ export default function About() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#151515] py-16 lg:py-24">
+      <footer className="main-footer pt-24 pb-8 lg:pt-32 lg:pb-12">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16 mb-12">
+            {/* Head Office */}
             <div className="space-y-8">
               <div>
                 <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-4">
@@ -234,11 +235,12 @@ export default function About() {
               </div>
             </div>
 
+            {/* Socials & Button */}
             <div>
               <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-6">
                 Socials
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-4 mb-8">
                 <a
                   href="#"
                   className="flex items-center gap-3 text-white font-noto text-lg lg:text-xl hover:text-orange transition-colors"
@@ -280,7 +282,7 @@ export default function About() {
                   className="flex items-center gap-3 text-white font-noto text-lg lg:text-xl hover:text-orange transition-colors"
                 >
                   <svg
-                    width="39"
+                    width="42"
                     height="37"
                     viewBox="0 0 39 37"
                     fill="none"
@@ -322,14 +324,8 @@ export default function About() {
                   YouTube
                 </a>
               </div>
-            </div>
 
-            <div className="lg:text-right">
-              <div className="text-white font-outfit text-6xl lg:text-7xl xl:text-8xl font-semibold opacity-50 mb-8">
-                ESS <span className="text-orange">+</span>BROWNE
-              </div>
-
-              <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3 lg:ml-auto">
+              <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3">
                 Send Message
                 <svg
                   width="32"
@@ -345,10 +341,24 @@ export default function About() {
                 </svg>
               </button>
             </div>
+
+            {/* Logo Right Aligned (to balance the Left Aligned Head Office) */}
+            <div className="flex flex-col items-start lg:items-end mt-8 lg:mt-0">
+              <div className="font-outfit font-black text-6xl lg:text-8xl leading-[0.85] opacity-50 text-[#BEBEBE] hover:opacity-100 transition-opacity cursor-default text-left">
+                {/* Line 1 */}
+                <div className="block">ESS</div>
+
+                {/* Line 2 */}
+                <div className="flex items-center whitespace-nowrap">
+                  <span className="text-orange mr-4">+</span>
+                  <span>BROWNE</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="text-center pt-8 border-t border-gray-700">
-            <p className="text-white font-noto text-lg lg:text-xl">
+          <div className="text-center pt-8">
+            <p className="text-text-grey font-noto text-md lg:text-md">
               Copyright 2025. ESS+BROWNE
             </p>
           </div>
