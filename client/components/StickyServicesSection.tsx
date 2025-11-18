@@ -12,24 +12,30 @@ const services: ServiceCard[] = [
   {
     number: "1",
     title: "Design",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/89a15934719db6997c1ee257ae2709716f098f98?width=1610",
-    bgColor: "#474747"
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/89a15934719db6997c1ee257ae2709716f098f98?width=1610",
+    bgColor: "#474747",
   },
   {
     number: "2",
     title: "Build",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
-    bgColor: "#2C2C2C"
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
+    bgColor: "#2C2C2C",
   },
   {
     number: "3",
     title: "Innovate/Remodel",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
-    bgColor: "#1C1C1C"
-  }
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. torquent per conubia nostra inceptos himenaeos.",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
+    bgColor: "#1C1C1C",
+  },
 ];
 
 export default function StickyServicesSection() {
@@ -43,7 +49,8 @@ export default function StickyServicesSection() {
           <div className="lg:sticky lg:top-32 h-fit">
             <div className="max-w-xl">
               <h2 className="text-text-color font-outfit text-4xl lg:text-5xl xl:text-6xl font-semibold mb-6 leading-tight">
-                What are the services we <span className="text-orange">provide?</span>
+                What are the services we{" "}
+                <span className="text-orange">provide?</span>
               </h2>
               <p className="text-text-color font-noto text-xl lg:text-2xl">
                 Lorem ipsum dolor sit amet consectetur adipiscing elit.
@@ -63,7 +70,13 @@ export default function StickyServicesSection() {
   );
 }
 
-function ServiceCard({ service, index }: { service: ServiceCard; index: number }) {
+function ServiceCard({
+  service,
+  index,
+}: {
+  service: ServiceCard;
+  index: number;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -71,7 +84,7 @@ function ServiceCard({ service, index }: { service: ServiceCard; index: number }
       ref={cardRef}
       className="relative rounded-lg overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-105"
     >
-      <div 
+      <div
         className="relative h-[600px] lg:h-[700px] p-8 lg:p-12 flex flex-col justify-end"
         style={{ backgroundColor: service.bgColor }}
       >
@@ -81,7 +94,7 @@ function ServiceCard({ service, index }: { service: ServiceCard; index: number }
             src={service.image}
             alt={service.title}
             className="w-full h-auto object-cover border-4 border-white"
-            style={{ maxHeight: '50%' }}
+            style={{ maxHeight: "50%" }}
           />
         </div>
 
