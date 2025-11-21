@@ -9,65 +9,74 @@ export default function Portfolio() {
   const projects = [
     {
       id: 1,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/f68da1779e2ee8a2191342aba2878dec7a76731a?width=1480",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/f68da1779e2ee8a2191342aba2878dec7a76731a?width=1480",
       alt: "Apartment Elevation Design",
       status: "completed",
-      span: "row-span-2"
+      span: "row-span-2",
     },
     {
       id: 2,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/342ed0a39f08f4e036fa5ef8eea303a5f0d9b5e9?width=1552",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/342ed0a39f08f4e036fa5ef8eea303a5f0d9b5e9?width=1552",
       alt: "Modern Home Design",
       status: "completed",
-      span: "row-span-1"
+      span: "row-span-1",
     },
     {
       id: 3,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/e7e75347d3f24012e3d2f64ea2104626f403da30?width=728",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/e7e75347d3f24012e3d2f64ea2104626f403da30?width=728",
       alt: "Modern Architecture",
       status: "in-progress",
-      span: "row-span-1"
+      span: "row-span-1",
     },
     {
       id: 4,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/7db84ff01aaaaa5d6cc0b7fdd10d8dc061a7e6c5?width=714",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/7db84ff01aaaaa5d6cc0b7fdd10d8dc061a7e6c5?width=714",
       alt: "Contemporary Design",
       status: "completed",
-      span: "row-span-1"
+      span: "row-span-1",
     },
     {
       id: 5,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/82ff5507faf51e8c72057a66b0623e6e7a61c2b6?width=1516",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/82ff5507faf51e8c72057a66b0623e6e7a61c2b6?width=1516",
       alt: "House Design",
       status: "in-progress",
-      span: "row-span-1"
+      span: "row-span-1",
     },
     {
       id: 6,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/8126ca32e746516bd41ef6fd6dd363d9480c098a?width=1516",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/8126ca32e746516bd41ef6fd6dd363d9480c098a?width=1516",
       alt: "Luxury Villa",
       status: "completed",
-      span: "row-span-2"
+      span: "row-span-2",
     },
     {
       id: 7,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/81dbefc38f230db4e424e7cd2b8c9cd39330426c?width=1508",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/81dbefc38f230db4e424e7cd2b8c9cd39330426c?width=1508",
       alt: "Modern Architecture Project",
       status: "not-started",
-      span: "row-span-1"
+      span: "row-span-1",
     },
     {
       id: 8,
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/d518f420912b96bdf68aaefa119c10e65e63c896?width=2988",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/d518f420912b96bdf68aaefa119c10e65e63c896?width=2988",
       alt: "American Modern Home",
       status: "completed",
-      span: "col-span-2 row-span-1"
-    }
+      span: "col-span-2 row-span-1",
+    },
   ];
 
-  const filteredProjects = activeFilter === "all" 
-    ? projects 
-    : projects.filter(p => p.status === activeFilter);
+  const filteredProjects =
+    activeFilter === "all"
+      ? projects
+      : projects.filter((p) => p.status === activeFilter);
 
   return (
     <div className="min-h-screen bg-white">
@@ -92,7 +101,10 @@ export default function Portfolio() {
               <Link to="/portfolio" className="text-orange font-medium">
                 PORTFOLIO
               </Link>
-              <Link to="/contact" className="hover:text-orange transition-colors">
+              <Link
+                to="/contact"
+                className="hover:text-orange transition-colors"
+              >
                 CONTACT
               </Link>
             </div>
