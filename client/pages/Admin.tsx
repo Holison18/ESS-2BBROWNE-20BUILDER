@@ -14,13 +14,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase"; 
+import { supabase } from "@/lib/supabase";
 
-// Extended schema to validate file input
+const STATUS_OPTIONS = [
+  { value: "completed", label: "Completed" },
+  { value: "ongoing", label: "In Progress" },
+  { value: "not-started", label: "Not Started" },
+];
+
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title is required." }),
-  category: z.string().min(2, { message: "Category is required." }),
+  category: z.string().min(2, { message: "Category is required (e.g. Residential)." }),
+  status: z.enum(["completed", "ongoing", "not-started"], {
+    required_error: "Please select a project status.",
+  }),
   description: z.string().min(10, { message: "Description is required." }),
 });
 
@@ -28,9 +43,8 @@ export default function Admin() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  // Optional: Check for session on mount (extra safety)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
@@ -48,25 +62,24 @@ export default function Admin() {
     },
   });
 
-  // Handle file selection manually
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files);
+      setSelectedFiles(filesArray);
     }
   };
 
-  // Logout Handler
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!selectedFile) {
+    if (selectedFiles.length === 0) {
       toast({
         variant: "destructive",
-        title: "Image Required",
-        description: "Please select an image for the project.",
+        title: "Images Required",
+        description: "Please select at least one image. The first image will be the cover.",
       });
       return;
     }
@@ -74,42 +87,60 @@ export default function Admin() {
     setIsLoading(true);
 
     try {
-      // 1. Upload Image to Supabase Storage
-      const fileExt = selectedFile.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`; // Unique name
-      const { error: uploadError } = await supabase.storage
-        .from("project-images") // Make sure this bucket exists!
-        .upload(fileName, selectedFile);
+      const uploadedUrls: string[] = [];
 
-      if (uploadError) throw uploadError;
+      // Loop through all selected files and upload them
+      for (const file of selectedFiles) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      // 2. Get the Public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from("project-images")
-        .getPublicUrl(fileName);
+        const { error: uploadError } = await supabase.storage
+          .from("project-images")
+          .upload(fileName, file);
 
-      // 3. Save Data to Supabase Database
+        if (uploadError) {
+          console.error("Error uploading file:", file.name, uploadError);
+          continue; 
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("project-images")
+          .getPublicUrl(fileName);
+
+        uploadedUrls.push(publicUrl);
+      }
+
+      if (uploadedUrls.length === 0) {
+        throw new Error("Failed to upload any images.");
+      }
+
+      // Save Data to Supabase
+      // Distinction Strategy:
+      // 1. 'image_url' = The FIRST image uploaded (Cover Image)
+      // 2. 'gallery_urls' = The FULL array of images (Gallery)
       const { error: dbError } = await supabase
-        .from("projects") // Make sure this table exists!
+        .from("projects")
         .insert([
           {
             title: values.title,
             category: values.category,
+            status: values.status,
             description: values.description,
-            image_url: publicUrl,
+            image_url: uploadedUrls[0], // The main cover image
+            gallery_urls: uploadedUrls, // The full gallery
           },
         ]);
 
       if (dbError) throw dbError;
 
-      // Success!
       toast({
         title: "Success!",
-        description: "Project uploaded successfully.",
+        description: `${uploadedUrls.length} images uploaded successfully.`,
       });
       
       form.reset();
-      setSelectedFile(null);
+      setSelectedFiles([]);
+      // Reset file input manually if needed
 
     } catch (error: any) {
       console.error(error);
@@ -148,27 +179,27 @@ export default function Admin() {
         <div className="bg-white p-8 lg:p-12 rounded-xl shadow-sm border">
           <div className="mb-8">
             <h1 className="font-outfit text-3xl font-bold text-text-color mb-2">Upload New Project</h1>
-            <p className="text-gray-500">Add details for a new project to display on your portfolio.</p>
+            <p className="text-gray-500">Add details and images. The <strong>first image</strong> you select will be the cover.</p>
           </div>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               
-              <div className="grid md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Project Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Adenta Residence" {...field} className="bg-gray-50" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Adenta Residence" {...field} className="bg-gray-50" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
+              <div className="grid md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="category"
@@ -176,26 +207,55 @@ export default function Admin() {
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Residential" {...field} className="bg-gray-50" />
+                        <Input placeholder="e.g. Residential, Commercial" {...field} className="bg-gray-50" />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="bg-gray-50">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {STATUS_OPTIONS.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              {status.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
-              {/* File Input */}
               <FormItem>
-                <FormLabel>Project Image</FormLabel>
+                <FormLabel>Project Images (Select Multiple)</FormLabel>
                 <FormControl>
                   <Input 
                     type="file" 
                     accept="image/*"
+                    multiple
                     onChange={handleFileChange}
                     className="cursor-pointer bg-gray-50" 
                   />
                 </FormControl>
-                <p className="text-xs text-gray-500 mt-2">Recommended size: 1920x1080px. Max 5MB.</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  {selectedFiles.length > 0 
+                    ? `${selectedFiles.length} files selected. First file will be the cover.` 
+                    : "Select one or more images."}
+                </p>
               </FormItem>
 
               <FormField
