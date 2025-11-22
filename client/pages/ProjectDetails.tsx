@@ -1,82 +1,74 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Ensure Link is imported
+import { Link, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
-
-type FilterType = "all" | "completed" | "ongoing" | "not-started";
 
 interface Project {
   id: number;
   title: string;
   category: string;
-  status: FilterType;
   description: string;
   image_url: string;
-  gallery_urls?: string[];
+  gallery_urls?: string[]; // Array of extra images
 }
 
-export default function Portfolio() {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [dbProjects, setDbProjects] = useState<Project[]>([]);
+export default function ProjectDetails() {
+  const { id } = useParams();
+  const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(9);
 
   useEffect(() => {
-    async function fetchProjects() {
+    // Scroll to top on load
+    window.scrollTo(0, 0);
+
+    async function fetchProject() {
+      if (!id) return;
+
       try {
         const { data, error } = await supabase
           .from("projects")
           .select("*")
-          .order("id", { ascending: false });
+          .eq("id", id)
+          .single();
 
         if (error) throw error;
-        setDbProjects(data || []);
+        setProject(data);
       } catch (err) {
-        console.error("Error fetching projects:", err);
+        console.error("Error fetching project:", err);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchProjects();
-  }, []);
 
-  const allDisplayProjects =
-    dbProjects.length === 1
-      ? Array(18)
-          .fill(null)
-          .map((_, i) => ({
-            ...dbProjects[0],
-            id: `${dbProjects[0].id}-${i}`, // Note: this ID might need special handling if you want to link to the REAL single project ID, but for unique keys in the list we use a composite ID.
-            // For linking, we should probably use the REAL ID if we want to show that specific project's details.
-            // However, since this is a demo fill, clicking any "clone" will likely just go to the detail page of the one real project or fail if the ID doesn't exist in DB.
-            // Let's assume for the demo we link using the real ID if possible, or just pass the composite ID and handle it (but standard practice is real ID).
-            // For this UI demo, clicking a 'clone' might result in a 404 on the details page if fetching by ID.
-            // Let's link to the REAL ID of the source project for now so it works.
-            realId: dbProjects[0].id,
-            status: ["completed", "ongoing", "not-started"][
-              i % 3
-            ] as FilterType,
-          }))
-      : dbProjects.map((p) => ({ ...p, realId: p.id })); // Add realId to normal projects too
+    fetchProject();
+  }, [id]);
 
-  const filteredItems =
-    activeFilter === "all"
-      ? allDisplayProjects
-      : allDisplayProjects.filter((p) => p?.status === activeFilter);
+  if (isLoading) {
+    return <ProjectDetailsSkeleton />;
+  }
 
-  const visibleItems = filteredItems.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredItems.length;
+  if (!project) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
+        <Link to="/portfolio" className="text-orange hover:underline">
+          Back to Portfolio
+        </Link>
+      </div>
+    );
+  }
 
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 6);
-  };
+  // Helper to safely get gallery images (or fallback if empty)
+  const gallery = project.gallery_urls || [];
+  const sidePlanImage = gallery[0] || project.image_url; // Use first gallery image or main image as fallback
+  const detailImage1 = gallery[1] || project.image_url;
+  const detailImage2 = gallery[2] || project.image_url;
+  const interiorImage = gallery[3] || project.image_url;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-20">
@@ -109,118 +101,135 @@ export default function Portfolio() {
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="pt-32 lg:pt-44 pb-24 lg:pb-32 flex-grow">
-        <div className="container mx-auto px-4 lg:px-20">
-          {/* Header Section */}
-          <div className="mb-12">
-            <p className="text-text-color font-outfit text-lg font-medium mb-2">
-              Our Projects
-            </p>
-            <h1 className="text-orange font-outfit text-4xl lg:text-5xl font-bold mb-6">
-              We Build Projects That Last
-            </h1>
-            <p className="text-gray-500 font-noto text-lg max-w-2xl">
-              Explore our curated selection of architectural projects,
-              showcasing innovation, elegance, and functional design across
-              Ghana.
-            </p>
-          </div>
-
-          {/* Filter Bar */}
-          <div className="mb-12">
-            <div className="flex flex-wrap gap-3">
-              {["all", "completed", "ongoing", "not-started"].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => {
-                    setActiveFilter(filter as FilterType);
-                    setVisibleCount(9);
-                  }}
-                  className={cn(
-                    "px-6 py-2 rounded-full font-noto text-sm lg:text-base border transition-all duration-300 capitalize",
-                    activeFilter === filter
-                      ? "bg-orange text-white border-orange"
-                      : "border-gray-300 text-gray-600 hover:border-orange hover:text-orange bg-transparent",
-                  )}
-                >
-                  {filter.replace("-", " ")}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Projects Grid */}
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-[350px] w-full rounded-none" />
-              ))}
-            </div>
-          ) : (
-            <motion.div
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      <main className="pt-32 lg:pt-40 pb-24">
+        {/* 1. PROJECT HEADER & HERO IMAGE */}
+        <div className="container mx-auto px-4 lg:px-20 mb-24 lg:mb-32">
+          <div className="mb-8">
+            <Link
+              to="/portfolio"
+              className="text-text-color/60 hover:text-orange font-outfit text-lg font-medium mb-1 inline-block transition-colors"
             >
-              <AnimatePresence mode="popLayout">
-                {visibleItems.map((project: any) => (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                    key={project.id}
-                    className="group relative h-[350px] overflow-hidden cursor-pointer bg-gray-100"
-                  >
-                    {/* WRAP CONTENT IN LINK TO PROJECT DETAILS */}
-                    <Link
-                      to={`/portfolio/${project.realId}`}
-                      className="block h-full w-full"
-                    >
-                      <img
-                        src={project.image_url}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+              ← Back to Portfolio
+            </Link>
+            <h1 className="text-orange font-outfit text-4xl lg:text-6xl font-bold mt-2">
+              {project.title}
+            </h1>
+            <p className="text-gray-500 font-noto text-lg mt-2 uppercase tracking-widest">
+              {project.category}
+            </p>
+          </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out backdrop-blur-sm">
-                        <div className="text-orange text-xs font-bold uppercase tracking-widest mb-1">
-                          {project.category}
-                        </div>
-                        <h3 className="text-white font-outfit text-xl font-bold mb-2">
-                          {project.title}
-                        </h3>
-                        <p className="text-gray-200 font-noto text-sm line-clamp-2">
-                          {project.description}
-                        </p>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+          {/* Large Hero Image (Main image_url) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full h-[400px] lg:h-[600px] bg-gray-100 rounded-lg overflow-hidden"
+          >
+            <img
+              src={project.image_url}
+              alt={project.title}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
+
+        {/* 2. CENTERED TEXT SECTION ("DESIGNING QUALITY") */}
+        <div className="container mx-auto px-4 lg:px-20 mb-24 lg:mb-32">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-outfit text-3xl lg:text-5xl font-bold uppercase mb-6 text-text-color">
+              Designing <span className="text-orange">Quality</span>
+            </h2>
+            {/* Using the project description here */}
+            <p className="font-noto text-lg lg:text-xl text-text-color leading-relaxed whitespace-pre-wrap">
+              {project.description}
+            </p>
+          </div>
+
+          {/* Wide Middle Image (Interior/Detail Shot) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="w-full h-[400px] lg:h-[550px] bg-gray-100 rounded-lg overflow-hidden"
+          >
+            <img
+              src={interiorImage}
+              alt="Interior View"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
+
+        {/* 3. SPLIT SECTION ("SIDE PLAN") */}
+        <div className="container mx-auto px-4 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-12">
+            {/* Left: Text Content (Placeholder for now, or more DB content) */}
+            <div>
+              <h2 className="font-outfit text-3xl lg:text-4xl font-bold uppercase mb-6 text-text-color">
+                Architectural <span className="text-orange">Details</span>
+              </h2>
+              <div className="font-noto text-lg text-text-color leading-relaxed space-y-6">
+                <p>
+                  Every line, angle, and material choice in the {project.title}{" "}
+                  was meticulously planned to balance aesthetics with
+                  functionality.
+                </p>
+                <p>
+                  From the initial concept sketches to the final structural
+                  engineering, our team ensured that the vision for this{" "}
+                  {project.category.toLowerCase()} project was realized without
+                  compromise.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Side Plan Image (Placeholder from gallery) */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="w-full aspect-square lg:aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden"
+            >
+              <img
+                src={sidePlanImage}
+                alt="Side Plan Detail"
+                className="w-full h-full object-cover"
+              />
             </motion.div>
-          )}
+          </div>
 
-          {!isLoading && filteredItems.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-xl text-gray-400">
-                No projects found in this category.
-              </p>
-            </div>
-          )}
-
-          {hasMore && (
-            <div className="flex justify-center mt-16">
-              <Button
-                onClick={handleLoadMore}
-                variant="outline"
-                className="border-orange text-orange hover:bg-orange hover:text-white px-8 py-6 text-lg rounded-full transition-all duration-300"
-              >
-                View More Projects
-              </Button>
-            </div>
-          )}
+          {/* Bottom Two Images Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="w-full h-[300px] lg:h-[400px] bg-gray-100 rounded-lg overflow-hidden"
+            >
+              <img
+                src={detailImage1}
+                alt="Detail View 1"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="w-full h-[300px] lg:h-[400px] bg-gray-100 rounded-lg overflow-hidden"
+            >
+              <img
+                src={detailImage2}
+                alt="Detail View 2"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </div>
         </div>
       </main>
 
@@ -317,6 +326,22 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function ProjectDetailsSkeleton() {
+  return (
+    <div className="min-h-screen bg-white pt-32 px-4 lg:px-20">
+      <div className="space-y-4 mb-8">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-16 w-3/4" />
+      </div>
+      <Skeleton className="w-full h-[500px] rounded-lg mb-12" />
+      <div className="space-y-4 max-w-3xl mx-auto text-center mb-12">
+        <Skeleton className="h-10 w-1/2 mx-auto" />
+        <Skeleton className="h-24 w-full" />
+      </div>
     </div>
   );
 }

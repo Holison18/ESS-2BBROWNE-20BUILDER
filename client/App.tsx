@@ -1,5 +1,4 @@
 import "./global.css";
-import Admin from "./pages/Admin.tsx";
 
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
@@ -11,8 +10,10 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Portfolio from "./pages/Portfolio";
 import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 import Login from "./pages/Login";
+import ProjectDetails from "./pages/ProjectDetails"; // <--- Import the new page
+import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -27,14 +28,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/admin" element={<Admin />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-          {/* Login Route */}
-          <Route path="/login" element={<Login />} />
+          {/* Add the Dynamic Project Details Route */}
+          <Route path="/portfolio/:id" element={<ProjectDetails />} />
 
-          {/* Protected Admin Route */}
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/admin"
             element={
@@ -43,6 +41,7 @@ const App = () => (
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
