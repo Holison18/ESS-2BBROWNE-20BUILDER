@@ -124,7 +124,7 @@ export default function ProjectDetails() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-full h-[400px] lg:h-[600px] bg-gray-100 rounded-lg overflow-hidden"
+            className="w-full h-[400px] lg:h-[600px] bg-gray-100 overflow-hidden"
           >
             <img
               src={project.image_url}
@@ -138,7 +138,7 @@ export default function ProjectDetails() {
         <div className="container mx-auto px-4 lg:px-20 mb-24 lg:mb-32">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="font-outfit text-3xl lg:text-5xl font-bold uppercase mb-6 text-text-color">
-              Designing <span className="text-orange">Quality</span>
+              About <span className="text-orange">Project</span>
             </h2>
             {/* Using the project description here */}
             <p className="font-noto text-lg lg:text-xl text-text-color leading-relaxed whitespace-pre-wrap">
@@ -152,7 +152,7 @@ export default function ProjectDetails() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="w-full h-[400px] lg:h-[550px] bg-gray-100 rounded-lg overflow-hidden"
+            className="w-full h-[400px] lg:h-[550px] bg-gray-100 overflow-hidden"
           >
             <img
               src={interiorImage}
@@ -191,7 +191,7 @@ export default function ProjectDetails() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="w-full aspect-square lg:aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden"
+              className="w-full aspect-square lg:aspect-[4/3] bg-gray-100 overflow-hidden"
             >
               <img
                 src={sidePlanImage}
@@ -208,7 +208,7 @@ export default function ProjectDetails() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="w-full h-[300px] lg:h-[400px] bg-gray-100 rounded-lg overflow-hidden"
+              className="w-full h-[300px] lg:h-[400px] bg-gray-100 overflow-hidden"
             >
               <img
                 src={detailImage1}
@@ -221,7 +221,7 @@ export default function ProjectDetails() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="w-full h-[300px] lg:h-[400px] bg-gray-100 rounded-lg overflow-hidden"
+              className="w-full h-[300px] lg:h-[400px] bg-gray-100 overflow-hidden"
             >
               <img
                 src={detailImage2}

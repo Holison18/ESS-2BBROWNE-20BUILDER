@@ -85,7 +85,7 @@ export default function Portfolio() {
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-22 lg:w-32 cursor-pointer"
+                className="h-8 lg:h-13 w-23 lg:w-32 cursor-pointer"
               />
             </Link>
             <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg font-medium">
@@ -184,7 +184,7 @@ export default function Portfolio() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out backdrop-blur-sm">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/30 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out backdrop-blur-sm">
                         <div className="text-orange text-xs font-bold uppercase tracking-widest mb-1">
                           {project.category}
                         </div>

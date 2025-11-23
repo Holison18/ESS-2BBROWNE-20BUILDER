@@ -82,7 +82,7 @@ function ServiceCard({ service, index }: { service: ServiceCard; index: number }
       className="group relative mb-24 last:mb-0"
     >
       {/* Image Container - Taller and cleaner */}
-      <div className="relative w-full h-[350px] lg:h-[500px] overflow-hidden rounded-xl">
+      <div className="relative w-full h-[350px] lg:h-[500px] overflow-hidden">
         <img
           src={service.image}
           alt={service.title}
@@ -93,7 +93,7 @@ function ServiceCard({ service, index }: { service: ServiceCard; index: number }
       </div>
 
       {/* Content Box - Floating card style */}
-      <div className="relative z-10 mx-4 -mt-16 lg:-mt-32 lg:ml-12 lg:mr-0 lg:w-[90%] bg-[#212121] p-8 lg:p-12 rounded-lg shadow-2xl border-t border-white/10">
+      <div className="relative z-10 mx-4 -mt-16 lg:-mt-32 lg:ml-12 lg:mr-0 lg:w-[90%] bg-[#212121] p-8 lg:p-12 shadow-2xl border-t border-white/10">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
           
           {/* Title and Number Wrapper */}

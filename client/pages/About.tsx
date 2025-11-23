@@ -14,7 +14,7 @@ export default function About() {
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-22 lg:w-32 cursor-pointer"
+                className="h-8 lg:h-13 w-23 lg:w-32 cursor-pointer"
               />
             </Link>
             <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg">
@@ -65,7 +65,7 @@ export default function About() {
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
                 viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
-                className="absolute right-0 top-6 lg:-right-4 lg:-top-8 hidden lg:block -z-0"
+                className="absolute right-0 top-6 lg:-right-4 lg:-top-6 hidden lg:block -z-0"
               >
                 <svg
                   width="118"
@@ -142,7 +142,7 @@ export default function About() {
               <img
                 src="https://api.builder.io/api/v1/image/assets/TEMP/f7911c2cd6af9a222083e11bd356af2391980400?width=2794"
                 alt="Architecture project"
-                className="w-full h-[400px] lg:h-[700px] object-cover rounded-lg grayscale"
+                className="w-full h-[400px] lg:h-[700px] object-cover grayscale"
               />
             </motion.div>
 
@@ -154,7 +154,7 @@ export default function About() {
               viewport={{ once: false, amount: 0.2 }} // Changed: Plays every time
               className="relative mt-[-40px] lg:mt-0 lg:absolute lg:bottom-12 lg:right-0 lg:max-w-xl z-10 px-4 lg:px-0"
             >
-              <div className="bg-text-color p-8 lg:p-12 rounded-lg shadow-xl">
+              <div className="bg-text-color p-8 lg:p-12 shadow-xl">
                 <p className="text-[#E3E3E3] font-noto text-lg lg:text-xl leading-relaxed">
                   Lorem ipsum dolor sit amet consectetur adipiscing elit.
                   Quisque faucibus ex sapien vitae pellentesque sem placerat. In

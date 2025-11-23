@@ -12,6 +12,7 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
     damping: 50,
     stiffness: 75,
   });
+  // Changed: once: false to allow repeating
   const isInView = useInView(ref, { once: false, margin: "0px 0px -100px 0px" });
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function Index() {
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-22 lg:w-32 cursor-pointer"
+                className="h-8 lg:h-13 w-23 lg:w-32 cursor-pointer"
               />
             </Link>
             <div className="hidden md:flex items-center gap-8 lg:gap-12 text-white font-noto text-base lg:text-lg font-medium tracking-wide">
@@ -178,7 +179,7 @@ export default function Index() {
               </h2>
 
               <p className="text-text-grey font-outfit text-2xl lg:text-4xl font-bold leading-tight mb-10">
-                is a design and
+                <span className="text-text-color">i</span>s a design and
                 architecture firm shaping spaces from Kumasi -{" "}
                 <span className="text-orange">Ghana</span>
               </p>
@@ -263,23 +264,23 @@ export default function Index() {
       </section>
 
       {/* Featured Projects Section */}
-      <section className="py-16 lg:py-24">
-        <div className="container mx-auto px-4 lg:px-20">
-          
-          <motion.div 
-             initial={{ opacity: 0, scale: 0.95 }}
-             whileInView={{ opacity: 1, scale: 1 }}
-             viewport={{ once: false, amount: 0.3 }}
-             transition={{ duration: 0.8 }}
-             className="mb-12 lg:mb-16 overflow-hidden rounded-lg"
-          >
-            <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/1e6e0a9fab431547242baa1573a364624798cd16?width=3104"
-              alt="Featured Project"
-              className="w-full h-[400px] lg:h-[600px] xl:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
+      <section className="py-16 lg:py-0">
+         {/* Full Width Image Container */}
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8 }}
+            className="w-full overflow-hidden" // No rounded corners, full width
+        >
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/1e6e0a9fab431547242baa1573a364624798cd16?width=3104"
+            alt="Featured Project"
+            className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
+          />
+        </motion.div>
 
+        <div className="container mx-auto px-4 lg:px-20 mt-12 lg:mt-16">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <motion.div
                initial={{ opacity: 0, x: -50 }}
@@ -312,7 +313,7 @@ export default function Index() {
                     key={index}
                     src={src}
                     alt="Project detail"
-                    className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity"
+                    className="w-full h-48 object-cover hover:opacity-90 transition-opacity" // Removed rounded class
                   />
               ))}
             </motion.div>
@@ -322,21 +323,22 @@ export default function Index() {
 
       {/* Projects Section 2 */}
       <section className="py-16 lg:py-24">
-        <div className="container mx-auto px-4 lg:px-20">
-          <motion.div 
-             initial={{ opacity: 0, scale: 0.95 }}
-             whileInView={{ opacity: 1, scale: 1 }}
-             viewport={{ once: false, amount: 0.3 }}
-             transition={{ duration: 0.8 }}
-             className="mb-12 lg:mb-16 overflow-hidden rounded-lg"
-          >
-            <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/9997d6b2c8161fe1e180fd1ce17b9bb173480174?width=2972"
-              alt="Featured Project"
-              className="w-full h-[400px] lg:h-[600px] xl:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
+         {/* Full Width Image Container */}
+         <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8 }}
+            className="w-full overflow-hidden mb-12 lg:mb-16" // No rounded corners
+        >
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/9997d6b2c8161fe1e180fd1ce17b9bb173480174?width=2972"
+            alt="Featured Project"
+            className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
+          />
+        </motion.div>
 
+        <div className="container mx-auto px-4 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <motion.div 
                initial={{ opacity: 0, x: -50 }}
@@ -354,7 +356,7 @@ export default function Index() {
                     key={index}
                     src={src}
                     alt="Project detail"
-                    className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity"
+                    className="w-full h-48 object-cover hover:opacity-90 transition-opacity" // Removed rounded class
                   />
               ))}
             </motion.div>
@@ -378,7 +380,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* UPDATED Services Section - Sticky Stack Effect */}
+      {/* UPDATED Services Section - Sticky Stack Effect with Side-in Animation */}
       <section className="py-24 lg:py-40 bg-white">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
@@ -402,8 +404,8 @@ export default function Index() {
               ].map((service, index) => (
                 <motion.div
                   key={service.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 100 }} // CHANGED: Start from 100px to the right
+                  whileInView={{ opacity: 1, x: 0 }} // Animate to x: 0 (original position)
                   viewport={{ once: false, amount: 0.3 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-[#212121] p-8 lg:p-12 rounded-lg shadow-2xl sticky top-32 border-t border-white/10 min-h-[500px]" // Increased height for bigger cards
