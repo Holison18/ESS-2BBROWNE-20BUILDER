@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef } from "react";
 import heroVideo from "../assets/backgroundvid.mp4"; 
-import logo from "../assets/logo.png";
+import logo from "../assets/SVG of logo-08.svg";
 
 // --- Helper Component: Number Counter ---
 function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -38,17 +38,17 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm transition-all duration-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-4 lg:py-6">
             <Link to="/">
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-23 lg:w-32 cursor-pointer"
+                className="h-20 lg:h-20 w-23 lg:w-32 cursor-pointer"
               />
             </Link>
-            <div className="hidden md:flex items-center gap-8 lg:gap-12 text-white font-noto text-base lg:text-lg font-medium tracking-wide">
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 text- font-noto text-base lg:text-lg font-medium tracking-wide">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -179,7 +179,7 @@ export default function Index() {
               </h2>
 
               <p className="text-text-grey font-outfit text-2xl lg:text-4xl font-bold leading-tight mb-10">
-                <span className="text-text-color">i</span>s a design and
+                is a design and
                 architecture firm shaping spaces from Kumasi -{" "}
                 <span className="text-orange">Ghana</span>
               </p>
@@ -376,60 +376,6 @@ export default function Index() {
                 faucibus ex sapien vitae pellentesque sem placerat. In id cursus
               </p>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* UPDATED Services Section - Sticky Stack Effect with Side-in Animation */}
-      <section className="py-24 lg:py-40 bg-white">
-        <div className="container mx-auto px-4 lg:px-20">
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
-            
-            {/* LEFT COLUMN (Sticky Title) */}
-            <div className="lg:w-1/2 h-fit lg:sticky lg:top-32 self-start">
-              <h2 className="text-text-color font-outfit text-4xl lg:text-6xl font-bold leading-tight mb-6">
-                What are the services we <span className="text-orange">provide?</span>
-              </h2>
-              <p className="text-text-color font-noto text-lg lg:text-2xl max-w-sm">
-                Lorem ipsum dolor sit amet consectetur adipiscing elit.
-              </p>
-            </div>
-
-            {/* RIGHT COLUMN (Stacking Cards) */}
-            <div className="lg:w-1/2 space-y-24">
-              {[
-                { id: "1", title: "Design" },
-                { id: "2", title: "Build" },
-                { id: "3", title: "Innovate" }
-              ].map((service, index) => (
-                <motion.div
-                  key={service.id}
-                  initial={{ opacity: 0, x: 100 }} // CHANGED: Start from 100px to the right
-                  whileInView={{ opacity: 1, x: 0 }} // Animate to x: 0 (original position)
-                  viewport={{ once: false, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-[#212121] p-8 lg:p-12 rounded-lg shadow-2xl sticky top-32 border-t border-white/10 min-h-[500px]" // Increased height for bigger cards
-                  // Each card gets a higher z-index and top offset to stack nicely. 
-                  // The top offset increases by 80px (20 * 4) for each card to show the "peek"
-                  style={{ 
-                    top: `${120 + index * 80}px`, 
-                    zIndex: index + 1 
-                  }}
-                >
-                  <div className="text-home-button-color font-outfit text-8xl lg:text-[200px] font-black leading-none mb-4 opacity-20 select-none">
-                    {service.id}
-                  </div>
-                  <h3 className="text-white font-outfit text-4xl lg:text-5xl font-bold mb-6 -mt-16 lg:-mt-32 relative z-10">
-                    {service.title}
-                  </h3>
-                  <p className="text-[#8D8D8D] font-noto text-lg leading-relaxed">
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                    faucibus ex sapien vitae pellentesque sem placerat.
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
           </div>
         </div>
       </section>
