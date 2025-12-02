@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
-import { useEffect, useRef } from "react";
-import heroVideo from "../assets/backgroundvid.mp4"; 
-import logo from "../assets/SVG of logo-08.svg";
+import { useEffect, useRef, useState } from "react";
+import heroVideo from "../assets/backgroundvid.mp4";
+import logo from "../assets/logo.png";
 
 // --- Helper Component: Number Counter ---
 function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -13,7 +13,10 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
     stiffness: 75,
   });
   // Changed: once: false to allow repeating
-  const isInView = useInView(ref, { once: false, margin: "0px 0px -100px 0px" });
+  const isInView = useInView(ref, {
+    once: false,
+    margin: "0px 0px -100px 0px",
+  });
 
   useEffect(() => {
     if (isInView) {
@@ -35,20 +38,37 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
 }
 
 export default function Index() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 py-2" : "bg-transparent py-4 lg:py-6"
+          }`}
+      >
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="flex items-center justify-between py-4 lg:py-6">
+          <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-20 lg:h-20 w-23 lg:w-32 cursor-pointer"
+                className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div className="hidden md:flex items-center gap-8 lg:gap-12 text- font-noto text-base lg:text-lg font-medium tracking-wide">
+            <div
+              className={`hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide ${isScrolled ? "text-black" : "text-white"
+                }`}
+            >
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -90,7 +110,6 @@ export default function Index() {
 
         <div className="container mx-auto px-4 lg:px-20 relative z-10">
           <div style={{ maxWidth: "1089px" }}>
-            
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -174,21 +193,21 @@ export default function Index() {
               transition={{ duration: 0.8 }}
               style={{ marginLeft: "130px" }}
             >
-              <h2 className="text-text-color font-outfit text-4xl lg:text-6xl font-bold mb-6">
+              <h2 className="text-text-color font-outfit text-4xl lg:text-6xl font-bold mb-4">
                 ESS + <span className="text-orange">BROWNE</span>
               </h2>
 
-              <p className="text-text-grey font-outfit text-2xl lg:text-4xl font-bold leading-tight mb-10">
-                is a design and
-                architecture firm shaping spaces from Kumasi -{" "}
-                <span className="text-orange">Ghana</span>
+              <p className="text-text-grey font-outfit text-2xl lg:text-4xl font-bold leading-tight mb-6">
+                is a dynamic design and build company dedicated to
+                transforming your vision into {" "}
+                <span className="text-orange">reality</span>
               </p>
 
-              <p className="text-text-grey-2 font-noto text-xl mb-8">
-                Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque
-                faucibus ex sapien vitae pellentesque sem placerat. In id cursus
-                mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                urna tempor. torquent per conubia nostra inceptos himenaeos.
+              <p className="text-text-grey-2 font-noto text-xl mb-6 mt-2">
+                With a passion for design excellence and a commitment to quality construction, we create
+                functional, sustainable, and aesthetically pleasing spaces. Our
+                team of skilled professionals is committed to delivering
+                exceptional results on every project.
               </p>
 
               <Link
@@ -233,7 +252,7 @@ export default function Index() {
 
               <div className="flex flex-col items-center">
                 <div className="text-text-grey font-outfit text-7xl lg:text-8xl xl:text-9xl font-black leading-none">
-                   <Counter value={15} suffix="+" />
+                  <Counter value={15} suffix="+" />
                 </div>
                 <p className="text-text-grey-2 font-noto text-lg lg:text-xl font-light mt-2">
                   Clients
@@ -244,49 +263,73 @@ export default function Index() {
 
           {/* Partner Logos - Infinite Scroll Marquee */}
           <div className="mt-16 lg:mt-24 overflow-hidden relative w-full">
-             <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-             <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
-             <div className="flex w-max animate-loop-scroll gap-16 items-center opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                {[...Array(2)].map((_, i) => (
-                    <div key={i} className="flex gap-16 items-center">
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                        <img src="https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290" alt="Partner" className="h-16 lg:h-20 w-auto" />
-                    </div>
-                ))}
-             </div>
+            <div className="flex w-max animate-loop-scroll gap-16 items-center opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="flex gap-16 items-center">
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290"
+                    alt="Partner"
+                    className="h-16 lg:h-20 w-auto"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Featured Projects Section */}
       <section className="py-16 lg:py-0">
-         {/* Full Width Image Container */}
-        <motion.div 
+        <div className="container mx-auto px-4 lg:px-20 mt-12 lg:mt-16">
+          {/* Adenta Project Image - Contained */}
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8 }}
-            className="w-full overflow-hidden" // No rounded corners, full width
-        >
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/1e6e0a9fab431547242baa1573a364624798cd16?width=3104"
-            alt="Featured Project"
-            className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
-          />
-        </motion.div>
+            className="w-full overflow-hidden mb-12"
+          >
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/1e6e0a9fab431547242baa1573a364624798cd16?width=3104"
+              alt="Featured Project"
+              className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
+            />
+          </motion.div>
 
-        <div className="container mx-auto px-4 lg:px-20 mt-12 lg:mt-16">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <motion.div
-               initial={{ opacity: 0, x: -50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: false, amount: 0.3 }}
-               transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
             >
               <h3 className="text-text-color font-outfit text-3xl lg:text-5xl font-bold mb-4">
                 Adenta <span className="text-orange">Project</span>
@@ -297,24 +340,24 @@ export default function Index() {
               </p>
             </motion.div>
 
-            <motion.div 
-               initial={{ opacity: 0, x: 50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: false, amount: 0.3 }}
-               transition={{ duration: 0.8, delay: 0.2 }}
-               className="grid grid-cols-3 gap-4"
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="grid grid-cols-3 gap-4"
             >
               {[
-                  "https://api.builder.io/api/v1/image/assets/TEMP/db47dced780ff62d3c14981739491322ef0efa9c?width=446",
-                  "https://api.builder.io/api/v1/image/assets/TEMP/2fc2d95762d328f026208cb664697ac5631113aa?width=450",
-                  "https://api.builder.io/api/v1/image/assets/TEMP/2b831201548b9bacca3818d8eeb1e3ca9a6ded25?width=832"
+                "https://api.builder.io/api/v1/image/assets/TEMP/db47dced780ff62d3c14981739491322ef0efa9c?width=446",
+                "https://api.builder.io/api/v1/image/assets/TEMP/2fc2d95762d328f026208cb664697ac5631113aa?width=450",
+                "https://api.builder.io/api/v1/image/assets/TEMP/2b831201548b9bacca3818d8eeb1e3ca9a6ded25?width=832",
               ].map((src, index) => (
-                  <img
-                    key={index}
-                    src={src}
-                    alt="Project detail"
-                    className="w-full h-48 object-cover hover:opacity-90 transition-opacity" // Removed rounded class
-                  />
+                <img
+                  key={index}
+                  src={src}
+                  alt="Project detail"
+                  className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+                />
               ))}
             </motion.div>
           </div>
@@ -323,50 +366,50 @@ export default function Index() {
 
       {/* Projects Section 2 */}
       <section className="py-16 lg:py-24">
-         {/* Full Width Image Container */}
-         <motion.div 
+        <div className="container mx-auto px-4 lg:px-20">
+          {/* Full Width Image Container - Now Contained */}
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8 }}
-            className="w-full overflow-hidden mb-12 lg:mb-16" // No rounded corners
-        >
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/9997d6b2c8161fe1e180fd1ce17b9bb173480174?width=2972"
-            alt="Featured Project"
-            className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
-          />
-        </motion.div>
+            className="w-full overflow-hidden mb-12 lg:mb-16"
+          >
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/9997d6b2c8161fe1e180fd1ce17b9bb173480174?width=2972"
+              alt="Featured Project"
+              className="w-full h-[400px] lg:h-[700px] object-cover hover:scale-105 transition-transform duration-700"
+            />
+          </motion.div>
 
-        <div className="container mx-auto px-4 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-            <motion.div 
-               initial={{ opacity: 0, x: -50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: false, amount: 0.3 }}
-               transition={{ duration: 0.8 }}
-               className="grid grid-cols-3 gap-4 lg:order-1"
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
+              className="grid grid-cols-3 gap-4 lg:order-1"
             >
               {[
-                  "https://api.builder.io/api/v1/image/assets/TEMP/29532dbb147df0e2e4c7b47bb47d522dda4f87b6?width=444",
-                  "https://api.builder.io/api/v1/image/assets/TEMP/28bfeadaa7459e98abeb403b780230cc7ae9a6f6?width=486",
-                  "https://api.builder.io/api/v1/image/assets/TEMP/c007a4425704f174f77f5f7ac936d91683093e59?width=440"
+                "https://api.builder.io/api/v1/image/assets/TEMP/29532dbb147df0e2e4c7b47bb47d522dda4f87b6?width=444",
+                "https://api.builder.io/api/v1/image/assets/TEMP/28bfeadaa7459e98abeb403b780230cc7ae9a6f6?width=486",
+                "https://api.builder.io/api/v1/image/assets/TEMP/c007a4425704f174f77f5f7ac936d91683093e59?width=440",
               ].map((src, index) => (
-                  <img
-                    key={index}
-                    src={src}
-                    alt="Project detail"
-                    className="w-full h-48 object-cover hover:opacity-90 transition-opacity" // Removed rounded class
-                  />
+                <img
+                  key={index}
+                  src={src}
+                  alt="Project detail"
+                  className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+                />
               ))}
             </motion.div>
 
-            <motion.div 
-               initial={{ opacity: 0, x: 50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: false, amount: 0.3 }}
-               transition={{ duration: 0.8, delay: 0.2 }}
-               className="lg:order-2 lg:text-right"
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:order-2 lg:text-right"
             >
               <h3 className="text-text-color font-outfit text-3xl lg:text-5xl font-bold mb-4">
                 CJ Adoma <span className="text-orange">Project</span>

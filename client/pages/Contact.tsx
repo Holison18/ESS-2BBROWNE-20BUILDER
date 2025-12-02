@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -40,6 +40,16 @@ const formSchema = z.object({
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -96,17 +106,22 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 py-2 shadow-md" : "bg-white py-4 lg:py-6"
+          }`}
+      >
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="flex items-center justify-between py-4 lg:py-6">
+          <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-22 lg:w-32 cursor-pointer"
+                className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg font-medium">
+            <div
+              className={`hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black`}
+            >
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
