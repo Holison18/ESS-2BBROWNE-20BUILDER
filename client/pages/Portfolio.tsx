@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Ensure Link is imported
+import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,16 +24,6 @@ export default function Portfolio() {
   const [dbProjects, setDbProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(9);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -60,18 +50,13 @@ export default function Portfolio() {
         .fill(null)
         .map((_, i) => ({
           ...dbProjects[0],
-          id: `${dbProjects[0].id}-${i}`, // Note: this ID might need special handling if you want to link to the REAL single project ID, but for unique keys in the list we use a composite ID.
-          // For linking, we should probably use the REAL ID if we want to show that specific project's details.
-          // However, since this is a demo fill, clicking any "clone" will likely just go to the detail page of the one real project or fail if the ID doesn't exist in DB.
-          // Let's assume for the demo we link using the real ID if possible, or just pass the composite ID and handle it (but standard practice is real ID).
-          // For this UI demo, clicking a 'clone' might result in a 404 on the details page if fetching by ID.
-          // Let's link to the REAL ID of the source project for now so it works.
+          id: `${dbProjects[0].id}-${i}`,
           realId: dbProjects[0].id,
           status: ["completed", "ongoing", "not-started"][
             i % 3
           ] as FilterType,
         }))
-      : dbProjects.map((p) => ({ ...p, realId: p.id })); // Add realId to normal projects too
+      : dbProjects.map((p) => ({ ...p, realId: p.id }));
 
   const filteredItems =
     activeFilter === "all"
@@ -88,10 +73,7 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 py-2 shadow-md" : "bg-white py-4 lg:py-6"
-          }`}
-      >
+      <nav className="relative top-0 left-0 right-0 z-50 bg-white py-4 lg:py-6">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
@@ -101,9 +83,7 @@ export default function Portfolio() {
                 className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div
-              className={`hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black`}
-            >
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -125,7 +105,7 @@ export default function Portfolio() {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-32 lg:pt-44 pb-24 lg:pb-32 flex-grow">
+      <main className="pt-16 lg:pt-24 pb-24 lg:pb-32 flex-grow">
         <div className="container mx-auto px-4 lg:px-20">
           {/* Header Section */}
           <div className="mb-12">

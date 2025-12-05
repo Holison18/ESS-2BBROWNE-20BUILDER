@@ -1,28 +1,13 @@
 import { Link } from "react-router-dom";
 import StickyServicesSection from "@/components/StickyServicesSection";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import logo from "@/assets/logo.png";
 
 export default function About() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 py-2 shadow-md" : "bg-white py-4 lg:py-6"
-          }`}
-      >
+      <nav className="relative top-0 left-0 right-0 z-50 bg-white py-4 lg:py-6">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
@@ -32,9 +17,7 @@ export default function About() {
                 className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div
-              className={`hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black`}
-            >
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -59,7 +42,7 @@ export default function About() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-white overflow-hidden">
+      <section className="pt-16 pb-16 lg:pt-24 lg:pb-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
             {/* Left Content */}
@@ -68,7 +51,7 @@ export default function About() {
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time in view
+                viewport={{ once: false, amount: 0.3 }}
               >
                 <h1 className="text-text-color font-outfit text-5xl lg:text-7xl xl:text-8xl font-semibold leading-tight mb-8 uppercase relative z-10">
                   Designing Quality Buildings{" "}
@@ -81,7 +64,7 @@ export default function About() {
                 initial={{ scale: 0, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
+                viewport={{ once: false, amount: 0.3 }}
                 className="absolute right-0 top-6 lg:-right-4 lg:-top-6 hidden lg:block -z-0"
               >
                 <svg
@@ -103,7 +86,7 @@ export default function About() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1 }}
-                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
+                viewport={{ once: false, amount: 0.3 }}
                 className="absolute inset-0 flex justify-center items-center pointer-events-none"
               >
                 <svg
@@ -127,7 +110,7 @@ export default function About() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                viewport={{ once: false, amount: 0.3 }} // Changed: Plays every time
+                viewport={{ once: false, amount: 0.3 }}
                 className="relative z-10 text-center max-w-sm mx-auto"
               >
                 <h2 className="text-text-color font-outfit text-3xl lg:text-4xl font-semibold mb-4 uppercase">
@@ -154,7 +137,7 @@ export default function About() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: false, amount: 0.2 }} // Changed: Plays every time
+              viewport={{ once: false, amount: 0.2 }}
               className="lg:w-[90%]"
             >
               <img
@@ -169,7 +152,7 @@ export default function About() {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: false, amount: 0.2 }} // Changed: Plays every time
+              viewport={{ once: false, amount: 0.2 }}
               className="relative mt-[-40px] lg:mt-0 lg:absolute lg:bottom-12 lg:right-0 lg:max-w-xl z-10 px-4 lg:px-0"
             >
               <div className="bg-text-color p-8 lg:p-12 shadow-xl">

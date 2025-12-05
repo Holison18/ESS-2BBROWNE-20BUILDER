@@ -46,12 +46,16 @@ export default function ProjectDetails() {
   }, [id]);
 
   if (isLoading) {
-    return <ProjectDetailsSkeleton />;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange"></div>
+      </div>
+    );
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
         <Link to="/portfolio" className="text-orange hover:underline">
           Back to Portfolio
@@ -68,19 +72,19 @@ export default function ProjectDetails() {
   const interiorImage = gallery[3] || project.image_url;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      <nav className="relative top-0 left-0 right-0 z-50 bg-white py-4 lg:py-6">
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="flex items-center justify-between py-4 lg:py-6">
+          <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
               <img
                 src={logo}
                 alt="ESS + BROWNE"
-                className="h-8 lg:h-13 w-22 lg:w-32 cursor-pointer"
+                className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div className="hidden md:flex items-center gap-8 lg:gap-12 text-text-color font-noto text-base lg:text-lg font-medium">
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -101,7 +105,7 @@ export default function ProjectDetails() {
         </div>
       </nav>
 
-      <main className="pt-32 lg:pt-40 pb-24">
+      <main className="pt-16 lg:pt-24 pb-24 lg:pb-32 flex-grow">
         {/* 1. PROJECT HEADER & HERO IMAGE */}
         <div className="container mx-auto px-4 lg:px-20 mb-24 lg:mb-32">
           <div className="mb-8">
@@ -326,22 +330,6 @@ export default function ProjectDetails() {
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function ProjectDetailsSkeleton() {
-  return (
-    <div className="min-h-screen bg-white pt-32 px-4 lg:px-20">
-      <div className="space-y-4 mb-8">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-16 w-3/4" />
-      </div>
-      <Skeleton className="w-full h-[500px] rounded-lg mb-12" />
-      <div className="space-y-4 max-w-3xl mx-auto text-center mb-12">
-        <Skeleton className="h-10 w-1/2 mx-auto" />
-        <Skeleton className="h-24 w-full" />
-      </div>
     </div>
   );
 }

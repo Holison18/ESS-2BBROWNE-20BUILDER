@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -40,16 +40,6 @@ const formSchema = z.object({
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -106,10 +96,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 py-2 shadow-md" : "bg-white py-4 lg:py-6"
-          }`}
-      >
+      <nav className="relative top-0 left-0 right-0 z-50 bg-white py-4 lg:py-6">
         <div className="container mx-auto px-4 lg:px-20">
           <div className="flex items-center justify-between py-2 lg:py-2">
             <Link to="/">
@@ -119,9 +106,7 @@ export default function Contact() {
                 className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
               />
             </Link>
-            <div
-              className={`hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black`}
-            >
+            <div className="hidden md:flex items-center gap-8 lg:gap-12 font-noto text-base lg:text-lg font-medium tracking-wide text-black">
               <Link to="/" className="hover:text-orange transition-colors">
                 HOME
               </Link>
@@ -142,7 +127,7 @@ export default function Contact() {
         </div>
       </nav>
 
-      <main className="pt-32 lg:pt-44 pb-16 flex-grow">
+      <main className="pt-16 lg:pt-24 pb-16 flex-grow">
         <div className="container mx-auto px-4 lg:px-20">
           {/* Header */}
           <div className="mb-12 lg:mb-16">
@@ -325,89 +310,35 @@ export default function Contact() {
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
-                        fill="currentColor"
+                        fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                        <path
+                          d="M17.472 14.382C17.115 14.323 15.481 13.507 15.194 13.471C14.907 13.435 14.596 13.543 14.309 13.974C14.022 14.405 13.21 15.353 12.947 15.64C12.684 15.927 12.373 15.963 11.99 15.748C11.607 15.533 10.387 15.118 8.974 13.824C7.861 12.804 7.144 11.532 6.929 11.125C6.714 10.718 6.906 10.518 7.1 10.325C7.275 10.151 7.491 9.87 7.682 9.655C7.873 9.44 7.969 9.273 8.089 9.034C8.209 8.795 8.137 8.579 8.041 8.388C7.945 8.197 7.203 6.308 6.916 5.542C6.629 4.776 6.342 4.896 6.127 4.896C5.936 4.896 5.721 4.896 5.506 4.896C5.291 4.896 4.932 4.992 4.645 5.327C4.358 5.662 3.521 6.475 3.521 8.127C3.521 9.779 4.693 11.333 4.86 11.572C5.027 11.811 7.155 15.182 10.554 16.545C13.953 17.908 13.953 17.454 14.551 17.382C15.149 17.31 16.488 16.568 16.775 15.731C17.062 14.894 17.062 14.177 16.966 14.034C16.87 13.89 16.655 13.818 16.296 13.746H17.472V14.382ZM12.038 22C6.509 22 2 17.491 2 11.962C2 6.433 6.509 1.924 12.038 1.924C17.567 1.924 22.076 6.433 22.076 11.962C22.076 17.491 17.567 22 12.038 22Z"
+                          fill="currentColor"
+                        />
                       </svg>
                       WhatsApp
                     </Button>
                   </div>
                 </form>
               </Form>
-
-              {/* Social Links */}
-              <div className="mt-12 pt-8 border-t border-gray-100">
-                <p className="text-gray-500 mb-4 font-medium">
-                  Connect with us:
-                </p>
-                <div className="flex gap-6">
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-orange transition-colors"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.468 2.37c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-orange transition-colors"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-orange transition-colors"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
             </div>
 
             {/* RIGHT SIDE: Map */}
-            <div className="h-[400px] lg:h-auto bg-gray-200 rounded-xl overflow-hidden shadow-lg relative min-h-[400px]">
-              {/* Placeholder for Google Maps Embed */}
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.489423835887!2d-1.5555!3d6.688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdb946c11b44675%3A0x123456789!2sKumasi%2C%20Ghana!5e0!3m2!1sen!2sgh!4v1614123456789!5m2!1sen!2sgh"
-                width="100%"
-                height="100%"
-                style={{ border: 0, filter: "grayscale(100%)" }}
-                allowFullScreen
-                loading="lazy"
-                className="absolute inset-0"
-              ></iframe>
-
-              {/* Map Overlay for Style */}
-              <div className="absolute inset-0 bg-orange/10 pointer-events-none mix-blend-multiply"></div>
+            <div className="h-full">
+              <div className="w-full h-[600px] rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.6207079843944!2d-1.6244157!3d6.6915481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNDEnMjkuNiJOIDHCsDM3JzI3LjkiVw!5e0!3m2!1sen!2sgh!4v1234567890"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="ESS + BROWNE Office Location"
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
