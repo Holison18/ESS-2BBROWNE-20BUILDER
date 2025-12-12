@@ -1,126 +1,155 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-interface ServiceCard {
-  number: string;
-  title: string;
-  description: string;
-  image: string;
-  bgColor: string;
-}
-
-const services: ServiceCard[] = [
+const services = [
   {
-    number: "1",
+    number: "01",
     title: "Design",
     description:
-      "From initial concept to detailed blueprints, our talented designers create spaces that reflect your unique style and functionality",
+      "From initial concept to detailed blueprints, our talented designers create spaces that reflect your unique style and functionality.",
     image:
       "https://api.builder.io/api/v1/image/assets/TEMP/89a15934719db6997c1ee257ae2709716f098f98?width=1610",
-    bgColor: "#474747",
   },
   {
-    number: "2",
+    number: "02",
     title: "Build",
     description:
       "Our skilled craftsmen employ the latest construction techniques to bring your vision to reality with precision and care.",
     image:
       "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
-    bgColor: "#2C2C2C",
   },
   {
-    number: "3",
-    title: "Innovate/Remodel",
+    number: "03",
+    title: "Innovate",
     description:
       "Transform existing spaces into fresh, modern environments that optimize functionality and aesthetics.",
     image:
       "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
-    bgColor: "#1C1C1C",
   },
 ];
 
 export default function StickyServicesSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeService, setActiveService] = useState(0);
 
   return (
-    <section ref={containerRef} className="relative bg-white py-24 lg:py-32">
+    <section className="py-24 lg:py-32 bg-white overflow-hidden">
       <div className="container mx-auto px-4 lg:px-20">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
-          {/* LEFT COLUMN (Sticky Title) */}
-          <div className="lg:w-1/3">
-            <div className="sticky top-32">
-              <h2 className="text-text-color font-outfit text-4xl lg:text-6xl font-bold leading-tight mb-6">
-                What are the services we{" "}
-                <span className="text-orange">provide?</span>
-              </h2>
-              <p className="text-text-grey font-noto text-lg lg:text-xl max-w-sm">
-                Lorem ipsum dolor sit amet consectetur adipiscing elit.
-              </p>
-            </div>
-          </div>
 
-          {/* RIGHT COLUMN (Scrolling Cards) */}
-          <div className="lg:w-2/3 space-y-24">
-            {services.map((service, index) => (
-              <ServiceCard key={index} service={service} index={index} />
-            ))}
+        {/* Header */}
+        <div className="mb-16 lg:mb-24 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div>
+            <h2 className="font-outfit text-4xl lg:text-6xl font-light text-black leading-tight">
+              Our <span className="font-bold text-orange">Services</span>
+            </h2>
           </div>
+          <p className="font-noto text-gray-500 max-w-md text-lg">
+            Comprehensive architectural solutions tailored to your unique vision and needs.
+          </p>
         </div>
+
+        {/* Accordion Container */}
+        <div className="flex flex-col lg:flex-row h-[800px] lg:h-[600px] gap-4">
+          {services.map((service, index) => (
+            <ServicePanel
+              key={index}
+              service={service}
+              isActive={activeService === index}
+              onClick={() => setActiveService(index)}
+              onHover={() => setActiveService(index)}
+            />
+          ))}
+        </div>
+
       </div>
     </section>
   );
 }
 
-function ServiceCard({
+function ServicePanel({
   service,
-  index,
+  isActive,
+  onClick,
+  onHover
 }: {
-  service: ServiceCard;
-  index: number;
+  service: (typeof services)[0];
+  isActive: boolean;
+  onClick: () => void;
+  onHover: () => void;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative mb-24 last:mb-0"
+      layout
+      onClick={onClick}
+      onMouseEnter={onHover}
+      className={cn(
+        "relative overflow-hidden cursor-pointer rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]",
+        isActive ? "flex-[3] lg:flex-[2.5]" : "flex-[1]"
+      )}
     >
-      {/* Image Container - Taller and cleaner */}
-      <div className="relative w-full h-[350px] lg:h-[500px] overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
         <img
           src={service.image}
           alt={service.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+          className={cn(
+            "w-full h-full object-cover transition-transform duration-1000",
+            isActive ? "scale-105 grayscale-0" : "scale-125 grayscale"
+          )}
         />
-        {/* Gradient Overlay to make text pop if it overlaps */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60" />
+        <div className={cn(
+          "absolute inset-0 transition-colors duration-700",
+          isActive ? "bg-black/40" : "bg-black/70 hover:bg-black/60"
+        )}></div>
       </div>
 
-      {/* Content Box - Floating card style */}
-      <div className="relative z-10 mx-4 -mt-16 lg:-mt-32 lg:ml-12 lg:mr-0 lg:w-[90%] bg-[#212121] p-8 lg:p-12 shadow-2xl border-t border-white/10">
-        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
-          {/* Title and Number Wrapper */}
-          <div className="relative">
-            {/* Big Number - Background Layer */}
-            <span className="absolute -top-10 -left-6 text-8xl lg:text-9xl font-black text-white/5 select-none pointer-events-none z-0">
-              {service.number}
-            </span>
+      {/* Content */}
+      <div className="relative h-full flex flex-col justify-end p-8 lg:p-12 z-10">
 
-            {/* Title - Foreground */}
-            <h3 className="relative z-10 font-outfit text-3xl lg:text-5xl font-bold uppercase tracking-wider text-white">
-              {service.title}
-            </h3>
-          </div>
+        {/* Number - Changes position based on state */}
+        <motion.div
+          layout
+          className="absolute top-8 left-8 lg:top-12 lg:left-12"
+        >
+          <span className={cn(
+            "font-outfit font-bold text-white/20 transition-all duration-500",
+            isActive ? "text-6xl lg:text-7xl" : "text-4xl lg:text-5xl"
+          )}>
+            {service.number}
+          </span>
+        </motion.div>
+
+        <div>
+          {/* Title */}
+          <motion.h3
+            layout="position"
+            className={cn(
+              "font-outfit font-bold text-white uppercase tracking-wider mb-4 transition-all duration-500 origin-left",
+              isActive ? "text-3xl lg:text-5xl" : "text-xl lg:text-2xl lg:-rotate-90 lg:whitespace-nowrap lg:translate-y-[-100px] lg:translate-x-2"
+              // Rotate title vertically when collapsed on desktop
+            )}
+          >
+            {service.title}
+          </motion.h3>
+
+          {/* Description & Line - Only visible when active */}
+          <AnimatePresence>
+            {isActive && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+              >
+                <div className="w-16 h-1 bg-orange mb-6"></div>
+                <p className="font-noto text-gray-200 text-base lg:text-lg leading-relaxed max-w-lg">
+                  {service.description}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Description */}
-        <p className="text-gray-400 font-noto text-lg lg:text-xl leading-relaxed max-w-2xl">
-          {service.description}
-        </p>
-
-        {/* Decorative Line */}
-        <div className="w-16 h-1 bg-orange mt-8" />
       </div>
     </motion.div>
   );
