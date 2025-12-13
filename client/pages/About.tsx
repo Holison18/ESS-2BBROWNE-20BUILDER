@@ -7,7 +7,7 @@ import principalHop from "@/assets/team/principal architect and HoP.png";
 import member1 from "@/assets/team/member1.png";
 import member2 from "@/assets/team/member2.png";
 import member3 from "@/assets/team/member3.png";
-// member4 is missing from asset list
+import member4 from "@/assets/team/member4.png";
 import member5 from "@/assets/team/member5.png";
 import member6 from "@/assets/team/member6.png";
 import member7 from "@/assets/team/member7.png";
@@ -21,35 +21,43 @@ import teamGroupImg from "@/assets/Team group.jpg"; // Note: Filename has space
 export default function About() {
   const coreValues = [
     {
-      title: "Integrity",
-      description: "We build with honesty and transparency, ensuring every project stands on a foundation of trust.",
+      title: "Unparalleled Expertise",
+      description: "Our team’s combined experience and passion for design and construction ensure exceptional results.",
       icon: "01"
     },
     {
-      title: "Innovation",
-      description: "Pushing boundaries with forward-thinking geometric design and modern sustainable solutions.",
+      title: "Client-Focused Approach",
+      description: "We prioritize your needs and goals throughout the entire project.",
       icon: "02"
     },
     {
-      title: "Excellence",
-      description: "A relentless pursuit of perfection in every detail, from the first sketch to the final brick.",
+      title: "Commitment to Quality",
+      description: "Our unwavering dedication to craftsmanship and attention to detail sets us apart.",
       icon: "03"
     },
     {
-      title: "Collaboration",
-      description: "Working hand-in-hand with clients and partners to achieve a unified, successfully realized vision.",
+      title: "Sustainable Practices",
+      description: "We incorporate eco-friendly materials and methods to create environmentally responsible spaces.",
       icon: "04"
     },
     {
-      title: "Sustainability",
-      description: "Respecting our environment through conscious material selection and energy-efficient design practices.",
+      title: "Timely Delivery",
+      description: "We understand the importance of deadlines and work efficiently to meet your project timeline",
       icon: "05"
     }
   ];
 
   const teamMembers = [
-    member1, member2, member3, member5, member6,
-    member7, member8, member9, member10, member1 // Reusing member1 to fill the 10th spot for symmetry if needed, or we can leave it as 9. User asked for "10 additional". I will reuse one to make 10 for the 5x2 grid.
+    { name: "Albert Oppong", role: "Construction Manager", img: member1 },
+    { name: "Team Member 2", role: "Architect", img: member2 },
+    { name: "Eugenia Asabea Kwakye", role: "Architect", img: member3 },
+    { name: "Nana Yaw Amoakohene", role: "Site Manager", img: member5 },
+    { name: "Team Member 5", role: "Architect", img: member6 },
+    { name: "Team Member 6", role: "Architect", img: member7 },
+    { name: "Team Member 7", role: "Architect", img: member8 },
+    { name: "Team Member 8", role: "Architect", img: member9 },
+    { name: "Team Member 9", role: "Architect", img: member10 },
+    { name: "Team Member 10", role: "Architect", img: member4 }, // Reused for grid
   ];
 
   return (
@@ -210,7 +218,7 @@ export default function About() {
               Design & Build Team
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-12">
-              {teamMembers.map((imgSrc, index) => (
+              {teamMembers.map((member, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0 }}
@@ -220,22 +228,21 @@ export default function About() {
                 >
                   <div className="w-full aspect-square mb-4 overflow-hidden rounded-full grayscale group-hover:grayscale-0 transition-all duration-500">
                     <img
-                      src={imgSrc}
-                      alt={`Team member ${index + 1}`}
+                      src={member.img}
+                      alt={member.name}
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     />
                   </div>
                   <h4 className="font-outfit text-lg font-medium text-black group-hover:text-orange transition-colors">
-                    Member {index + 1}
+                    {member.name}
                   </h4>
-                  <p className="font-noto text-xs text-gray-500">Architect</p>
+                  <p className="font-noto text-xs text-gray-500">{member.role}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </div>
       </section>
-
     </div>
   );
 }

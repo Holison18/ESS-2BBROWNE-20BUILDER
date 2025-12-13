@@ -2,30 +2,32 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+// Service Images
+import designImg from "@/assets/services/Design.jpg";
+import remodelImg from "@/assets/services/Remodel.jpg";
+import innovateImg from "@/assets/services/Innovate.jpg";
+
 const services = [
   {
     number: "01",
     title: "Design",
     description:
       "From initial concept to detailed blueprints, our talented designers create spaces that reflect your unique style and functionality.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/89a15934719db6997c1ee257ae2709716f098f98?width=1610",
+    image: designImg,
   },
   {
     number: "02",
     title: "Build",
     description:
       "Our skilled craftsmen employ the latest construction techniques to bring your vision to reality with precision and care.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
+    image: remodelImg,
   },
   {
     number: "03",
     title: "Innovate",
     description:
       "Transform existing spaces into fresh, modern environments that optimize functionality and aesthetics.",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/937b648c483b94f38e76431d4e567fa613cede29?width=1248",
+    image: innovateImg,
   },
 ];
 

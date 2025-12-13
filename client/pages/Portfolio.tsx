@@ -88,7 +88,7 @@ export default function Portfolio() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-gray-200 font-noto text-lg lg:text-xl font-light tracking-wide max-w-2xl mx-auto"
           >
-            A curation of our finest architectural endeavors across residential and commercial sectors.
+            A curation of our finest architectural endeavors across different sectors.
           </motion.p>
         </div>
       </section>

@@ -79,7 +79,7 @@ export default function Index() {
             transition={{ duration: 0.8 }}
             className="text-white/80 font-outfit text-sm lg:text-base font-bold tracking-[0.3em] uppercase mb-6"
           >
-            Architectural Excellence
+            From
           </motion.h2>
 
           <motion.h1
@@ -222,7 +222,9 @@ export default function Index() {
               </div>
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end border-t border-gray-200 pt-6">
                 <div>
-                  <h3 className="font-outfit text-3xl lg:text-5xl font-bold text-black mb-2 group-hover:text-orange transition-colors">Viewpane</h3>
+                  <Link to="/portfolio">
+                    <h3 className="font-outfit text-3xl lg:text-5xl font-bold text-black mb-2 group-hover:text-orange transition-colors">Viewpane</h3>
+                  </Link>
                   <p className="font-noto text-gray-500">Residential Complex</p>
                 </div>
                 <div className="mt-4 lg:mt-0">
@@ -242,14 +244,16 @@ export default function Index() {
               <div className="relative h-[500px] lg:h-[800px] overflow-hidden mb-8" onClick={() => openLightbox([edintronMain, edintronFront, edintronSide1, edintronSide2], 0)}>
                 <img
                   src={edintronSide2}
-                  alt="Edintron Project"
+                  alt="Edintrom Project"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
               </div>
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end border-t border-gray-200 pt-6">
                 <div>
-                  <h3 className="font-outfit text-3xl lg:text-5xl font-bold text-black mb-2 group-hover:text-orange transition-colors">Edintron</h3>
+                  <Link to="/portfolio">
+                    <h3 className="font-outfit text-3xl lg:text-5xl font-bold text-black mb-2 group-hover:text-orange transition-colors">Edintron</h3>
+                  </Link>
                   <p className="font-noto text-gray-500">Commercial Hub</p>
                 </div>
                 <div className="mt-4 lg:mt-0">

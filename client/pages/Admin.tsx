@@ -3,6 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
+import imageCompression from "browser-image-compression"; // Import compression
 import {
   Form,
   FormControl,
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react"; // Added Loader2
 import ProjectList from "@/components/ProjectList";
 
 const STATUS_OPTIONS = [
@@ -112,6 +113,24 @@ export default function Admin() {
     navigate("/login");
   };
 
+  // Helper: Compress Image
+  const compressFile = async (file: File): Promise<File> => {
+    const options = {
+      maxSizeMB: 1,           // Max 1MB
+      maxWidthOrHeight: 1920, // FHD
+      useWebWorker: true,
+    };
+    try {
+      console.log(`Compressing ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)...`);
+      const compressedFile = await imageCompression(file, options);
+      console.log(`Compressed to ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+      return compressedFile;
+    } catch (error) {
+      console.error("Compression error:", error);
+      return file; // Fallback to original
+    }
+  };
+
   // Switching Views helpers
   const startCreate = () => {
     setEditingProject(null);
@@ -167,12 +186,13 @@ export default function Admin() {
 
       // 1. Upload Main Cover Image (if changed)
       if (coverImage) {
-        const fileExt = coverImage.name.split(".").pop();
+        const compressedCover = await compressFile(coverImage);
+        const fileExt = compressedCover.name.split(".").pop();
         const fileName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
         const { error: coverError } = await supabase.storage
           .from("project-images")
-          .upload(fileName, coverImage);
+          .upload(fileName, compressedCover);
 
         if (coverError) throw coverError;
 
@@ -187,12 +207,13 @@ export default function Admin() {
       if (galleryFiles.length > 0) {
         const newGalleryUrls: string[] = [];
         for (const file of galleryFiles) {
-          const fExt = file.name.split(".").pop();
+          const compressedGalleryFile = await compressFile(file);
+          const fExt = compressedGalleryFile.name.split(".").pop();
           const fName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${fExt}`;
 
           const { error: galleryError } = await supabase.storage
             .from("project-images")
-            .upload(fName, file);
+            .upload(fName, compressedGalleryFile);
 
           if (galleryError) {
             console.error("Error uploading gallery file:", file.name, galleryError);
@@ -205,17 +226,11 @@ export default function Admin() {
 
           newGalleryUrls.push(publicUrl);
         }
-        // Strategy: Append to existing, or Replace?
-        // Let's Append for now, or user can assume upload means "add these too"
-        // But for a simple MVP edit, maybe we just Append.
+        // Strategy: Append to existing
         finalGalleryUrls = [...(finalGalleryUrls || []), ...newGalleryUrls];
       }
 
       // 3. Upload Drawing Images and Construct Drawings Array
-      // Mix of existing drawings (objects with URLs) and new uploads (files)
-      // The form 'values.drawings' has the descriptions. 
-      // We need to merge everything carefully.
-
       const drawingsData: { url: string, description: string }[] = [];
       const drawingDescriptions = values.drawings || [];
 
@@ -227,12 +242,13 @@ export default function Admin() {
 
         // If new file uploaded for this index, upload it
         if (file) {
-          const fileExt = file.name.split(".").pop();
+          const compressedDrawing = await compressFile(file);
+          const fileExt = compressedDrawing.name.split(".").pop();
           const fileName = `drawing-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
           const { error: uploadError } = await supabase.storage
             .from("project-images")
-            .upload(fileName, file);
+            .upload(fileName, compressedDrawing);
 
           if (uploadError) {
             console.error("Error uploading drawing:", file.name, uploadError);
@@ -263,6 +279,8 @@ export default function Admin() {
         drawings: drawingsData,
       };
 
+      console.log("Submitting Payload:", payload); // Debug logging
+
       let error = null;
 
       if (view === 'edit' && editingProject) {
@@ -280,8 +298,11 @@ export default function Admin() {
 
       if (error) throw error;
 
+      // Force a small delay or query invalidation could be envisioned here but
+      // since we unmount the list, it should re-fetch.
+
       toast({
-        title: "Success!",
+        title: "Success! 🚀",
         description: view === 'edit' ? "Project updated successfully." : "Project created successfully.",
       });
 
@@ -289,6 +310,7 @@ export default function Admin() {
       goBackToList();
 
     } catch (error: any) {
+
       console.error(error);
       toast({
         variant: "destructive",
@@ -570,9 +592,16 @@ export default function Admin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-text-color hover:bg-orange text-white h-12 text-lg transition-colors mt-8"
+                  className="w-full bg-text-color hover:bg-orange text-white h-12 text-lg transition-colors mt-8 flex items-center justify-center gap-2"
                 >
-                  {isLoading ? "Saving..." : (view === 'create' ? "Upload Project" : "Update Project")}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    view === 'create' ? "Upload Project" : "Update Project"
+                  )}
                 </Button>
               </form>
             </Form>
