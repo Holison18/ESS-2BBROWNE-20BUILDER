@@ -102,6 +102,12 @@ export default {
           to: { transform: "translateX(-100%)" },
         },
       },
+      transitionDuration: {
+        "2000": "2000ms",
+      },
+      transitionTimingFunction: {
+        "custom-ease": "cubic-bezier(0.25, 1, 0.5, 1)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

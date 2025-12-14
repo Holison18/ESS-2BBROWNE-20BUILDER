@@ -126,7 +126,7 @@ export default function ProjectDetails() {
             <img
               src={project.image_url}
               alt={project.title}
-              className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-[2s]"
+              className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-2000"
             />
             {/* Gradient Overlay for text readability if needed, but keeping it clean for now */}
             <div className="absolute inset-0 bg-black/10"></div>

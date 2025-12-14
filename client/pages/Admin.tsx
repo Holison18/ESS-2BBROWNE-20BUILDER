@@ -284,10 +284,17 @@ export default function Admin() {
       let error = null;
 
       if (view === 'edit' && editingProject) {
-        const { error: updateError } = await supabase
+        console.log("Updating project ID:", editingProject.id);
+        const { error: updateError, data } = await supabase
           .from("projects")
           .update(payload)
-          .eq('id', editingProject.id);
+          .eq('id', editingProject.id)
+          .select();
+
+        if (!updateError && (!data || data.length === 0)) {
+          throw new Error("Update failed: No records modified. This is likely a permission (RLS) issue.");
+        }
+
         error = updateError;
       } else {
         const { error: insertError } = await supabase

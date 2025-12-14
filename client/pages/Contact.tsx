@@ -125,8 +125,8 @@ export default function Contact() {
               <div className="p-8 border border-gray-100 hover:border-orange/20 transition-colors group">
                 <h3 className="font-outfit text-xl font-bold mb-4 group-hover:text-orange transition-colors">Office</h3>
                 <p className="font-noto text-gray-500 text-sm leading-relaxed">
-                  123 Architectural Avenue,<br />
-                  East Legon, Accra<br />
+                  69 Ferry Pass Street,<br />
+                  Deduako - Kodiekrom, Kumasi<br />
                   Ghana
                 </p>
               </div>

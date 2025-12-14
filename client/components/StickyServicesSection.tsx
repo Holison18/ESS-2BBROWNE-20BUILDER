@@ -85,7 +85,7 @@ function ServicePanel({
       onClick={onClick}
       onMouseEnter={onHover}
       className={cn(
-        "relative overflow-hidden cursor-pointer rounded-2xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]",
+        "relative overflow-hidden cursor-pointer rounded-2xl transition-all duration-700 ease-custom-ease",
         isActive ? "flex-[3] lg:flex-[2.5]" : "flex-[1]"
       )}
     >
