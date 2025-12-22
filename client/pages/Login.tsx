@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 
+import logo from "../assets/logo.png";
+
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
@@ -67,13 +69,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-sm border">
-        <div className="text-center mb-8">
-          <div className="font-outfit font-bold text-2xl text-text-color mb-2">
-            ESS<span className="text-orange">+</span>BROWNE
-          </div>
-          <h1 className="text-lg text-gray-500">Admin Access</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50/50 px-4">
+      <div className="w-full max-w-md bg-white p-8 lg:p-10 rounded-2xl shadow-xl shadow-gray-100 border border-gray-100">
+        <div className="text-center mb-10">
+          <img src={logo} alt="ESS+BROWNE" className="h-16 mx-auto mb-6 opacity-90" />
+          <h1 className="text-xl text-gray-900 font-outfit font-bold tracking-tight">Admin Portal</h1>
+          <p className="text-sm text-gray-500 mt-2">Enter your credentials to access the dashboard.</p>
         </div>
 
         <Form {...form}>

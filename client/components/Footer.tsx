@@ -4,65 +4,85 @@ import logo from "../assets/logo.png";
 
 export default function Footer() {
     return (
-        <footer className="main-footer pt-24 pb-8 lg:pt-32 lg:pb-12 mt-auto">
-            <div className="container mx-auto px-4 lg:px-20">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16 mb-12">
-                    <div className="space-y-8">
+        <footer className="main-footer pt-24 pb-8 lg:pt-32 lg:pb-12 mt-auto relative overflow-hidden">
+            <div className="container mx-auto px-4 lg:px-20 relative z-10">
+                <div className="flex flex-col lg:flex-row lg:justify-between gap-12 lg:gap-8 mb-12">
+                    {/* Column 1: Address & Contact */}
+                    <div className="space-y-8 lg:max-w-md">
                         <div>
-                            <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-4">
+                            <h3 className="text-white font-noto text-2xl font-bold mb-4">
                                 Head Office
                             </h3>
-                            <p className="text-text-grey font-noto text-lg lg:text-xl leading-relaxed">
+                            <p className="text-text-grey font-noto text-lg leading-relaxed">
                                 69 Ferry Pass Street,
                                 <br />
                                 Deduako - Kodiekrom, Kumasi
                             </p>
                         </div>
 
-                        <p className="text-text-grey font-noto text-lg lg:text-xl">
+                        <p className="text-text-grey font-noto text-lg">
                             info@essbrown.com
                         </p>
 
                         <div>
-                            <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-4">
+                            <h3 className="text-white font-noto text-2xl font-bold mb-4">
                                 Contact:
                             </h3>
-                            <p className="text-text-grey font-noto text-lg lg:text-xl">
+                            <p className="text-text-grey font-noto text-lg">
                                 (+233) 415 4906 | (+233) 451 7903
                             </p>
                         </div>
                     </div>
 
+                    {/* Column 2: Quick Links */}
                     <div>
-                        <h3 className="text-white font-noto text-2xl lg:text-3xl font-bold mb-6">
+                        <h3 className="text-white font-noto text-2xl font-bold mb-6">
+                            Quick Links
+                        </h3>
+                        <div className="flex flex-col space-y-4">
+                            <Link to="/" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Home</Link>
+                            <Link to="/portfolio" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Portfolio</Link>
+                            <Link to="/about" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">About Us</Link>
+                            <Link to="/contact" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Contact</Link>
+                        </div>
+                    </div>
+
+                    {/* Column 3: Socials */}
+                    <div>
+                        <h3 className="text-white font-noto text-2xl font-bold mb-6">
                             Socials
                         </h3>
                         <div className="space-y-4 mb-8">
                             <a
                                 href="#"
-                                className="flex items-center gap-3 text-text-grey font-noto text-lg lg:text-xl hover:text-orange transition-colors"
+                                className="flex items-center gap-3 text-text-grey font-noto text-lg hover:text-orange transition-colors"
                             >
                                 Instagram
                             </a>
                             <a
                                 href="#"
-                                className="flex items-center gap-3 text-text-grey font-noto text-lg lg:text-xl hover:text-orange transition-colors"
+                                className="flex items-center gap-3 text-text-grey font-noto text-lg hover:text-orange transition-colors"
                             >
                                 LinkedIn
                             </a>
                             <a
                                 href="#"
-                                className="flex items-center gap-3 text-text-grey font-noto text-lg lg:text-xl hover:text-orange transition-colors"
+                                className="flex items-center gap-3 text-text-grey font-noto text-lg hover:text-orange transition-colors"
                             >
                                 YouTube
                             </a>
                         </div>
+                    </div>
 
-                        <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-8 py-4 text-text-color font-noto text-lg lg:text-xl flex items-center gap-3">
+                    <div className="flex flex-col justify-start items-start">
+                        <p className="text-text-grey font-noto text-lg mb-6 max-w-xs text-left">
+                            Got a <span className="text-orange">project</span> in mind? We're always here to chat and bring your <span className="text-orange">vision</span> to life.
+                        </p>
+                        <button className="bg-home-button hover:bg-orange transition-colors rounded-full px-6 py-3 text-text-color font-noto text-lg flex items-center gap-3">
                             Send Message
                             <svg
-                                width="32"
-                                height="32"
+                                width="24"
+                                height="24"
                                 viewBox="0 0 32 32"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -74,22 +94,19 @@ export default function Footer() {
                             </svg>
                         </button>
                     </div>
-
-                    <div className="flex flex-col items-start lg:items-end mt-8 lg:mt-0">
-                        <div className="font-outfit font-black text-6xl lg:text-8xl leading-[0.85] opacity-50 text-[#BEBEBE] hover:opacity-100 transition-opacity cursor-default text-left">
-                            <div className="block">ESS</div>
-                            <div className="flex items-center whitespace-nowrap">
-                                <span className="text-orange mr-4">+</span>
-                                <span>BROWNE</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="text-center pt-8">
-                    <p className="text-text-grey font-noto text-md lg:text-md">
+                    <p className="text-text-grey font-noto text-sm">
                         Copyright 2025. ESS+BROWNE
                     </p>
+                </div>
+            </div>
+
+            {/* Background Watermark */}
+            <div className="absolute bottom-0 w-full flex justify-center select-none z-0 translate-y-[20%]">
+                <div className="font-outfit font-black text-[25vw] leading-none text-[#BEBEBE] opacity-[0.03] hover:opacity-10 transition-opacity duration-700 cursor-default whitespace-nowrap">
+                    ESS<span className="mx-4">+</span>BROWNE
                 </div>
             </div>
         </footer>

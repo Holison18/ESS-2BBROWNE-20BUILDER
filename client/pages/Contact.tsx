@@ -319,10 +319,10 @@ export default function Contact() {
                 {/* Map Overlay to desaturate */}
                 <div className="absolute inset-0 pointer-events-none z-10 mix-blend-saturation bg-white/0"></div>
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3962.6207079843944!2d-1.6244157!3d6.6915481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNDEnMjkuNiJOIDHCsDM3JzI3LjkiVw!5e0!3m2!1sen!2sgh!4v1234567890"
+                  src="https://maps.google.com/maps?q=69%20Ferry%20Pass%20Street,%20Deduako%20-%20Kodiekrom,%20Kumasi&t=&z=15&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   height="100%"
-                  style={{ border: 0, filter: 'grayscale(100%) contrast(1.2) opacity(0.8)' }}
+                  style={{ border: 0, filter: 'grayscale(10%) sepia(5%) contrast(105%)' }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

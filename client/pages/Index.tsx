@@ -143,11 +143,16 @@ export default function Index() {
               ].map((stat, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6 }}
-                  className="flex flex-col border-l border-gray-200 pl-6"
+                  transition={{
+                    delay: i * 0.1,
+                    duration: 0.6,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="flex flex-col border-l border-gray-200 pl-6 hover:border-orange transition-colors duration-300"
                 >
                   <span className="font-outfit text-5xl lg:text-6xl font-bold text-black mb-2">
                     <Counter value={stat.val} suffix="+" />

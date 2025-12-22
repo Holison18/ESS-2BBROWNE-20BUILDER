@@ -162,6 +162,9 @@ export default function Portfolio() {
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500"></div>
 
+                        {/* Shadow Gradient Overlay for text readability on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
                         {/* Status Indicator (Integrated Minimal) */}
                         <div className="absolute top-4 right-4 bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-sm z-10">
                           <span className={cn(
