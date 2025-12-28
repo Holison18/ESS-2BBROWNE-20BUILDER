@@ -20,7 +20,14 @@ interface Project {
   image_url: string;
   gallery_urls?: string[]; // Array of extra images
   drawings?: { url: string; description: string }[]; // New Drawings field
+  status: string;
 }
+
+const STATUS_LABELS: Record<string, string> = {
+  "completed": "Completed",
+  "ongoing": "In Progress",
+  "not-started": "Not Started",
+};
 
 
 
@@ -176,7 +183,9 @@ export default function ProjectDetails() {
                 {/* Placeholder for more metadata if added to DB later (Location, Year, Area) */}
                 <div>
                   <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Status</span>
-                  <span className="font-noto text-lg text-black">Completed</span>
+                  <span className="font-noto text-lg text-black">
+                    {STATUS_LABELS[project.status] || project.status}
+                  </span>
                 </div>
               </div>
             </div>
