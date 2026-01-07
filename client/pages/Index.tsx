@@ -269,8 +269,13 @@ export default function Index() {
 
           </div>
 
-          <div className="mt-16 text-center lg:hidden">
-            <Link to="/portfolio" className="text-gray-400 hover:text-orange transition-colors font-outfit tracking-widest uppercase border-b border-gray-200 pb-1">View All Projects</Link>
+          <div className="mt-20 flex justify-center">
+            <Link
+              to="/portfolio"
+              className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-black transition duration-300 ease-out border border-black rounded-full shadow-md hover:bg-black hover:text-white"
+            >
+              <span className="font-outfit text-lg tracking-wider uppercase">View All Projects</span>
+            </Link>
           </div>
 
         </div>
