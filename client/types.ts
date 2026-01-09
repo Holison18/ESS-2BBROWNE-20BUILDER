@@ -7,7 +7,8 @@ export type ExteriorSubCategory =
   | "Hospitality"
   | "Educational"
   | "Health"
-  | "Recreational";
+  | "Recreational"
+  | "Industrial";
 
 export type InteriorSubCategory = "Public" | "Private";
 
@@ -39,6 +40,7 @@ export const CATEGORY_MAP: Record<ProjectCategory, string[]> = {
     "Educational",
     "Health",
     "Recreational",
+    "Industrial",
   ],
   Interior: ["Public", "Private"],
 };

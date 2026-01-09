@@ -150,7 +150,7 @@ export default function ProjectDetails() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="font-noto text-lg lg:text-2xl font-light mt-4 tracking-wider opacity-80 text-white drop-shadow-lg"
+                className="font-noto text-lg lg:text-2xl font-light mt-2 tracking-wider opacity-80 text-white drop-shadow-lg"
               >
                 {project.tagline || project.category}
               </motion.p>

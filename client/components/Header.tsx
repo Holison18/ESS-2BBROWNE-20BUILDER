@@ -51,7 +51,7 @@ export default function Header() {
                         <img
                             src={logo}
                             alt="ESS + BROWNE"
-                            className="h-10 lg:h-14 w-auto cursor-pointer object-contain"
+                            className="h-6 lg:h-8 w-auto cursor-pointer object-contain"
                         />
                     </Link>
 
