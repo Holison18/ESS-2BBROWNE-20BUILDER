@@ -7,20 +7,44 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import heroVideo from "../assets/backgroundvid.mp4";
 
-type FilterType = "all" | "completed" | "ongoing" | "not-started";
+import { Project, getMainCategory, ProjectCategory } from "@/types";
 
-interface Project {
-  id: number;
-  title: string;
-  category: string;
-  status: FilterType;
-  description: string;
-  image_url: string;
-  gallery_urls?: string[];
-}
+import { CATEGORY_MAP } from "@/types";
+
+// ... (keep imports)
+
+// --- Randomization Utilities ---
+const seededRandom = (seed: number) => {
+  const m = 0x80000000;
+  const a = 1103515245;
+  const c = 12345;
+  let currentSeed = seed;
+
+  return () => {
+    currentSeed = (a * currentSeed + c) % m;
+    return currentSeed / (m - 1);
+  };
+};
+
+const shuffleArray = <T,>(array: T[], seed: number) => {
+  const rng = seededRandom(seed);
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+// -------------------------------
 
 export default function Portfolio() {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  // 1. Main Category State (Default: Exterior)
+  const [activeMainFilter, setActiveMainFilter] = useState<ProjectCategory>("Exterior");
+
+  // 2. Sub Category State (Default: All for that main category, or explicit sub)
+  // allowing null or "All" to show everything in that main category
+  const [activeSubFilter, setActiveSubFilter] = useState<string>("All");
+
   const [dbProjects, setDbProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(9);
@@ -34,7 +58,16 @@ export default function Portfolio() {
           .order("id", { ascending: false });
 
         if (error) throw error;
-        setDbProjects(data || []);
+
+        // Randomize based on 4-hour window
+        // We divide the current timestamp by the duration of the window (4 hours in ms)
+        // This gives us a unique integer for every 4-hour block.
+        const timeBlock = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+        const seed = Math.floor(Date.now() / timeBlock);
+
+        const shuffledData = shuffleArray(data || [], seed);
+
+        setDbProjects(shuffledData);
       } catch (err) {
         console.error("Error fetching projects:", err);
       } finally {
@@ -44,16 +77,29 @@ export default function Portfolio() {
     fetchProjects();
   }, []);
 
-  const filteredItems =
-    activeFilter === "all"
-      ? dbProjects
-      : dbProjects.filter((p) => p?.status === activeFilter);
+  // FILTER LOGIC
+  const filteredItems = dbProjects.filter((p) => {
+    const mainCat = getMainCategory(p.category);
+    if (mainCat !== activeMainFilter) return false; // Must match main category
+
+    // If sub-filter is "All", show everything in this main category
+    if (activeSubFilter === "All") return true;
+
+    // Otherwise match specific sub-category
+    return p.category === activeSubFilter;
+  });
 
   const visibleItems = filteredItems.slice(0, visibleCount);
   const hasMore = visibleCount < filteredItems.length;
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 6);
+  };
+
+  const handleMainFilterChange = (cat: ProjectCategory) => {
+    setActiveMainFilter(cat);
+    setActiveSubFilter("All"); // Reset sub filter when switching main
+    setVisibleCount(9);
   };
 
   return (
@@ -88,41 +134,72 @@ export default function Portfolio() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-gray-200 font-noto text-lg lg:text-xl font-light tracking-wide max-w-2xl mx-auto"
           >
-            A curation of our finest architectural endeavors across different sectors.
+            A curation of our finest architectural endeavors.
           </motion.p>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="py-24 lg:py-32 flex-grow bg-white">
+      <main className="py-16 lg:py-24 flex-grow bg-white">
         <div className="container mx-auto px-4 lg:px-20">
 
-          {/* 2. FILTER BAR - Minimal Text Links */}
-          <div className="flex flex-wrap justify-center gap-8 lg:gap-16 mb-20 border-b border-gray-100 pb-8">
-            {["all", "completed", "ongoing", "not-started"].map((filter) => (
+          {/* 2. FILTER SECTION */}
+          <div className="mb-20 space-y-8">
+
+            {/* LEVEL 1: Main Categories (Big, Centered) */}
+            <div className="flex justify-center gap-12 lg:gap-24 border-b border-gray-100/50 pb-6">
+              {(["Exterior", "Interior"] as ProjectCategory[]).map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => handleMainFilterChange(filter)}
+                  className={cn(
+                    "font-outfit text-2xl lg:text-4xl transition-all duration-300 relative py-2",
+                    activeMainFilter === filter
+                      ? "text-black font-medium"
+                      : "text-gray-300 hover:text-gray-400 font-light"
+                  )}
+                >
+                  {filter}
+                  {/* Minimal Dot Indicator instead of underline for premium feel */}
+                  {activeMainFilter === filter && (
+                    <motion.div
+                      layoutId="main-filter-dot"
+                      className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* LEVEL 2: Sub Categories (Pills/Tabs) */}
+            <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
               <button
-                key={filter}
-                onClick={() => {
-                  setActiveFilter(filter as FilterType);
-                  setVisibleCount(9);
-                }}
+                onClick={() => setActiveSubFilter("All")}
                 className={cn(
-                  "font-outfit text-sm lg:text-base tracking-widest uppercase transition-all duration-300 relative py-2",
-                  activeFilter === filter
-                    ? "text-orange font-bold"
-                    : "text-gray-400 hover:text-black"
+                  "px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border",
+                  activeSubFilter === "All"
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
                 )}
               >
-                {filter.replace("-", " ")}
-                {/* Underline Animation */}
-                {activeFilter === filter && (
-                  <motion.div
-                    layoutId="filter-underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange"
-                  />
-                )}
+                ALL
               </button>
-            ))}
+
+              {CATEGORY_MAP[activeMainFilter].map((sub) => (
+                <button
+                  key={sub}
+                  onClick={() => setActiveSubFilter(sub)}
+                  className={cn(
+                    "px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border",
+                    activeSubFilter === sub
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
+                  )}
+                >
+                  {sub.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* 3. PROJECTS GRID */}
@@ -153,7 +230,7 @@ export default function Portfolio() {
                       className="block w-full relative"
                     >
                       {/* Image Container */}
-                      <div className="h-[400px] overflow-hidden mb-6 relative">
+                      <div className="h-[400px] overflow-hidden mb-6 relative bg-gray-100">
                         <img
                           src={project.image_url}
                           alt={project.title}

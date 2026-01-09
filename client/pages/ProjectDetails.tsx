@@ -12,16 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-interface Project {
-  id: number;
-  title: string;
-  category: string;
-  description: string;
-  image_url: string;
-  gallery_urls?: string[]; // Array of extra images
-  drawings?: { url: string; description: string }[]; // New Drawings field
-  status: string;
-}
+import { Project } from "@/types";
 
 const STATUS_LABELS: Record<string, string> = {
   "completed": "Completed",
@@ -133,7 +124,7 @@ export default function ProjectDetails() {
             <img
               src={project.image_url}
               alt={project.title}
-              className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-2000"
+              className="w-full h-full transform group-hover:scale-105 transition-transform duration-2000"
             />
             {/* Gradient Overlay for text readability if needed, but keeping it clean for now */}
             <div className="absolute inset-0 bg-black/10"></div>
@@ -141,22 +132,27 @@ export default function ProjectDetails() {
 
           {/* Floating Title (Bottom Left) - Aligned with Header */}
           <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
-            <div className="container mx-auto px-4 lg:px-20 pb-8 lg:pb-16">
+            {/* GRADIENT OVERLAY for contrast */}
+            <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+            <div className="relative container mx-auto px-4 lg:px-20 pb-12 lg:pb-20">
               <motion.h1
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
-                className="font-outfit text-5xl lg:text-8xl font-bold uppercase leading-none drop-shadow-xl text-white"
+                className="font-outfit text-4xl lg:text-7xl font-bold uppercase leading-none drop-shadow-xl text-white/90"
               >
                 {project.title}
               </motion.h1>
+
+              {/* Tagline / Subheading */}
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="font-noto text-lg lg:text-2xl mt-4 tracking-wider uppercase opacity-90 text-white drop-shadow-lg"
+                className="font-noto text-lg lg:text-2xl font-light mt-4 tracking-wider opacity-80 text-white drop-shadow-lg"
               >
-                {project.category}
+                {project.tagline || project.category}
               </motion.p>
             </div>
           </div>
@@ -187,6 +183,20 @@ export default function ProjectDetails() {
                     {STATUS_LABELS[project.status] || project.status}
                   </span>
                 </div>
+
+                {project.location && (
+                  <div>
+                    <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Location</span>
+                    <span className="font-noto text-lg text-black">{project.location}</span>
+                  </div>
+                )}
+
+                {project.approx_area && (
+                  <div>
+                    <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Approx. Area</span>
+                    <span className="font-noto text-lg text-black">{project.approx_area}</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -261,38 +271,51 @@ export default function ProjectDetails() {
           </section>
         )}
 
-        {/* 3. GALLERY SECTION - Architectural Grid */}
+        {/* 3. GALLERY SECTION - Bento Grid Layout */}
         {(project.gallery_urls && project.gallery_urls.length > 0) && (
           <section className="px-4 lg:px-12 py-24 lg:py-32 bg-white">
             <div className="container mx-auto mb-16 px-4">
               <h3 className="font-outfit text-xl font-bold uppercase text-gray-300">Project Gallery</h3>
             </div>
-            <div className="container mx-auto space-y-4 lg:space-y-8">
-              {/* Dynamic Mapping with varied layout feeling */}
-              {project.gallery_urls.map((url, index) => {
-                // Adjust index to account for main image being 0 in allImages
-                const lightboxIndex = index + 1;
-                const isFullWidth = index % 3 === 0; // Simple pattern: Full, Split, Split
+            <div className="container mx-auto">
+              {/* Added grid-flow-dense to help fill any tiny gaps if resizing occurs, though our math is perfect */}
+              <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[300px] gap-4 grid-flow-dense">
+                {project.gallery_urls.map((url, index) => {
+                  const lightboxIndex = index + 1;
 
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-10%" }}
-                    transition={{ duration: 0.8 }}
-                    className={`relative overflow-hidden cursor-pointer group ${isFullWidth ? 'w-full h-[50vh] lg:h-[80vh]' : 'inline-block w-full lg:w-[calc(50%-1rem)] h-[40vh] lg:h-[60vh] mr-0 lg:mr-4 last:mr-0 mb-4 lg:mb-0 align-top'}`}
-                    onClick={() => openLightbox(lightboxIndex)}
-                  >
-                    <img
-                      src={url}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                  </motion.div>
-                );
-              })}
+                  // Perfect 16-cell block pattern (repeats every 7 items)
+                  // Total cells: 4 + 2 + 1 + 1 + 2 + 2 + 4 = 16 cells (4 perfect rows)
+                  const patternIndex = index % 7;
+                  let spanClass = "md:col-span-1 md:row-span-1";
+
+                  if (patternIndex === 0) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Top Left)
+                  else if (patternIndex === 1) spanClass = "md:col-span-2 md:row-span-1"; // 2x1 (Top Right)
+                  else if (patternIndex === 2) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 1)
+                  else if (patternIndex === 3) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 2)
+                  else if (patternIndex === 4) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 1)
+                  else if (patternIndex === 5) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 2)
+                  else if (patternIndex === 6) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Bot Right)
+
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.05 }}
+                      className={`relative cursor-pointer group overflow-hidden rounded-none ${spanClass}`}
+                      onClick={() => openLightbox(lightboxIndex)}
+                    >
+                      <img
+                        src={url}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 block"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
           </section>
         )}

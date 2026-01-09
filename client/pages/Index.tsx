@@ -77,7 +77,8 @@ export default function Index() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-white/80 font-outfit text-sm lg:text-base font-bold tracking-[0.3em] uppercase mb-6"
+            className="text-white
+             font-outfit text-sm lg:text-base font-bold tracking-[0.3em] uppercase mb-6"
           >
             From
           </motion.h2>
@@ -269,14 +270,7 @@ export default function Index() {
 
           </div>
 
-          <div className="mt-20 flex justify-center">
-            <Link
-              to="/portfolio"
-              className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-black transition duration-300 ease-out border border-black rounded-full shadow-md hover:bg-black hover:text-white"
-            >
-              <span className="font-outfit text-lg tracking-wider uppercase">View All Projects</span>
-            </Link>
-          </div>
+
 
         </div>
       </section>

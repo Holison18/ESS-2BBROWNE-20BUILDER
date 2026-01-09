@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react"; // Added Loader2
 import ProjectList from "@/components/ProjectList";
+import { CATEGORY_MAP, ProjectCategory } from "@/types";
 
 const STATUS_OPTIONS = [
   { value: "completed", label: "Completed" },
@@ -35,7 +36,10 @@ const STATUS_OPTIONS = [
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title is required." }),
-  category: z.string().min(2, { message: "Category is required (e.g. Residential)." }),
+  tagline: z.string().optional(),
+  category: z.string().min(2, { message: "Category is required." }),
+  location: z.string().optional(),
+  approx_area: z.string().optional(),
   status: z.enum(["completed", "ongoing", "not-started"], {
     required_error: "Please select a project status.",
   }),
@@ -59,10 +63,17 @@ export default function Admin() {
   // SEPARATE STATE FOR IMAGES
   const [coverImage, setCoverImage] = useState<File | null>(null); // Single Main Image
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);   // Multiple Gallery Images
+  const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>([]); // URLs kept during edit
+
+  // NEW: Track paths to delete from storage on save
+  const [pathsToDelete, setPathsToDelete] = useState<string[]>([]);
 
   // Custom State for Drawings (Architecture)
-  // We need to sync this with the FieldArray for descriptions
+  // We need to sync this with the fieldArray for descriptions
   const [drawingFiles, setDrawingFiles] = useState<Record<number, File | null>>({});
+
+  // Category State for dependent dropdown
+  const [mainCategory, setMainCategory] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -76,7 +87,10 @@ export default function Admin() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      tagline: "",
       category: "",
+      location: "",
+      approx_area: "",
       description: "",
       drawings: [],
     },
@@ -90,16 +104,32 @@ export default function Admin() {
   // HANDLER: Main Cover Image (Single)
   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      // If we are replacing an existing cover image (in edit mode), mark the old one for deletion
+      if (editingProject?.image_url && !coverImage) {
+        // Only mark if we haven't already replaced it in this session 
+        // (Simpler logic: We'll calculate final deletions on submit)
+      }
       setCoverImage(e.target.files[0]);
     }
   };
 
-  // HANDLER: Gallery Images (Multiple)
+  // HANDLER: Gallery Images (Multiple - Append)
   const handleGalleryFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
-      setGalleryFiles(filesArray);
+      setGalleryFiles(prev => [...prev, ...filesArray]); // Append instead of replace
+      e.target.value = ""; // Reset input so same file can be selected again if needed
     }
+  };
+
+  const removeGalleryFile = (index: number) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingGalleryUrl = (urlToRemove: string) => {
+    setExistingGalleryUrls(prev => prev.filter(url => url !== urlToRemove));
+    // Mark for deletion
+    setPathsToDelete(prev => [...prev, urlToRemove]);
   };
 
   const handleDrawingFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,13 +166,18 @@ export default function Admin() {
     setEditingProject(null);
     form.reset({
       title: "",
+      tagline: "",
       category: "",
+      location: "",
+      approx_area: "",
       status: "not-started",
       description: "",
       drawings: [],
     });
+    setMainCategory(""); // Reset main category
     setCoverImage(null);
     setGalleryFiles([]);
+    setExistingGalleryUrls([]);
     setDrawingFiles({});
     setView('create');
   };
@@ -151,13 +186,28 @@ export default function Admin() {
     setEditingProject(project);
     form.reset({
       title: project.title,
+      tagline: project.tagline || "",
       category: project.category,
+      location: project.location || "",
+      approx_area: project.approx_area || "",
       status: project.status,
       description: project.description,
       drawings: project.drawings || [],
     });
+
+    // Determine Main Category from the project's sub category
+    let foundMain = "";
+    for (const [key, values] of Object.entries(CATEGORY_MAP)) {
+      if (values.includes(project.category)) {
+        foundMain = key;
+        break;
+      }
+    }
+    setMainCategory(foundMain);
+
+    setExistingGalleryUrls(project.gallery_urls || []); // Initialize with existing
     setCoverImage(null);
-    setGalleryFiles([]);
+    setGalleryFiles([]); // Clear new uploads
     setDrawingFiles({});
     setView('edit');
   };
@@ -181,11 +231,41 @@ export default function Admin() {
     setIsLoading(true);
 
     try {
+      // 0. Process Deletions First
+      if (pathsToDelete.length > 0) {
+        console.log("Cleanup: Deleting removed images...", pathsToDelete);
+        // Extract file paths from full URLs
+        const filesToRemove = pathsToDelete.map(url => {
+          // Assuming URL format: .../project-images/filename.ext
+          const parts = url.split('/project-images/');
+          return parts.length > 1 ? parts[1] : null;
+        }).filter(Boolean) as string[];
+
+        if (filesToRemove.length > 0) {
+          const { error: deleteError } = await supabase.storage
+            .from("project-images")
+            .remove(filesToRemove);
+
+          if (deleteError) console.error("Error deleting files:", deleteError);
+        }
+      }
+
       let finalCoverUrl = editingProject?.image_url || "";
-      let finalGalleryUrls = editingProject?.gallery_urls || [];
+      let finalGalleryUrls: string[] = []; // Re-construct this list
 
       // 1. Upload Main Cover Image (if changed)
       if (coverImage) {
+        // If there was an old cover image, delete it (unless it's being used elsewhere, 
+        // but for now we assume 1:1 relationship for simplicity or just let it stay if unsure. 
+        // Better: Delete old cover if we are replacing it.)
+        if (editingProject?.image_url) {
+          const oldUrl = editingProject.image_url;
+          const parts = oldUrl.split('/project-images/');
+          if (parts.length > 1) {
+            await supabase.storage.from("project-images").remove([parts[1]]);
+          }
+        }
+
         const compressedCover = await compressFile(coverImage);
         const fileExt = compressedCover.name.split(".").pop();
         const fileName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -201,11 +281,15 @@ export default function Admin() {
           .getPublicUrl(fileName);
 
         finalCoverUrl = publicUrl;
+      } else if (!editingProject?.image_url && view === 'edit') {
+        // Case: User removed the cover image in edit mode but didn't upload a new one?
+        // Validation prevents submit, but logic should handle it just in case.
+        finalCoverUrl = "";
       }
 
       // 2. Upload Gallery Images (Append new ones)
+      let newGalleryUrls: string[] = [];
       if (galleryFiles.length > 0) {
-        const newGalleryUrls: string[] = [];
         for (const file of galleryFiles) {
           const compressedGalleryFile = await compressFile(file);
           const fExt = compressedGalleryFile.name.split(".").pop();
@@ -226,10 +310,9 @@ export default function Admin() {
 
           newGalleryUrls.push(publicUrl);
         }
-        // Strategy: Append to existing
-        finalGalleryUrls = [...(finalGalleryUrls || []), ...newGalleryUrls];
       }
-
+      // Strategy: Append to existing KEPT urls
+      finalGalleryUrls = [...existingGalleryUrls, ...newGalleryUrls];
       // 3. Upload Drawing Images and Construct Drawings Array
       const drawingsData: { url: string, description: string }[] = [];
       const drawingDescriptions = values.drawings || [];
@@ -271,7 +354,10 @@ export default function Admin() {
       // Save Data to Supabase
       const payload = {
         title: values.title,
+        tagline: values.tagline,
         category: values.category,
+        location: values.location,
+        approx_area: values.approx_area,
         status: values.status,
         description: values.description,
         image_url: finalCoverUrl,
@@ -396,20 +482,72 @@ export default function Admin() {
                   )}
                 />
 
+                {/* NEW: TAGLINE FIELD */}
+                <FormField
+                  control={form.control}
+                  name="tagline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tagline / Hero Subheading</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. A modern landmark for the city" {...field} className="bg-gray-50" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. Residential, Commercial" {...field} className="bg-gray-50" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {/* CATEGORY SELECTION */}
+                  <div className="space-y-4">
+                    <FormLabel>Project Category</FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Main Category */}
+                      <Select
+                        value={mainCategory}
+                        onValueChange={(val) => {
+                          setMainCategory(val);
+                          form.setValue("category", ""); // Reset subcategory
+                        }}>
+                        <SelectTrigger className="bg-gray-50">
+                          <SelectValue placeholder="Type (Int/Ext)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Interior">Interior</SelectItem>
+                          <SelectItem value="Exterior">Exterior</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {/* Sub Category */}
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                              disabled={!mainCategory}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-gray-50">
+                                  <SelectValue placeholder={mainCategory ? "Select Category" : "Select Type First"} />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {mainCategory && CATEGORY_MAP[mainCategory as ProjectCategory]?.map((item) => (
+                                  <SelectItem key={item} value={item}>
+                                    {item}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
 
                   <FormField
                     control={form.control}
@@ -437,6 +575,35 @@ export default function Admin() {
                   />
                 </div>
 
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Accra, Ghana" {...field} className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="approx_area"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Approx. Area (Sq Ft)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. 2,500 sq ft" {...field} className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 {/* MAIN COVER IMAGE SECTION */}
                 <div className="space-y-4 p-6 bg-orange/5 border border-orange/10 rounded-lg">
                   <FormLabel className="text-lg font-semibold text-orange-900">1. Main Cover Image</FormLabel>
@@ -448,9 +615,26 @@ export default function Admin() {
 
                   {/* Preview for Edit Mode */}
                   {view === 'edit' && editingProject?.image_url && !coverImage && (
-                    <div className="mb-4">
+                    <div className="mb-4 relative inline-block">
                       <p className="text-xs font-bold text-gray-500 mb-2 uppercase">Current Cover:</p>
-                      <img src={editingProject.image_url} alt="Current Cover" className="h-40 w-auto rounded border shadow-sm object-cover" />
+                      <div className="relative group">
+                        <img src={editingProject.image_url} alt="Current Cover" className="h-40 w-auto rounded border shadow-sm object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // Logic to clear the image URL from "editingProject" conceptually in UI
+                            // We update state to reflect removal
+                            const updatedProject = { ...editingProject, image_url: "" };
+                            setEditingProject(updatedProject);
+                            // Mark old for deletion (if saved)
+                            setPathsToDelete(prev => [...prev, editingProject.image_url]);
+                          }}
+                          className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove Current Cover"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -471,23 +655,8 @@ export default function Admin() {
                 <div className="space-y-4 p-6 bg-gray-50 border border-gray-100 rounded-lg">
                   <FormLabel className="text-lg font-semibold text-gray-900">2. Project Gallery</FormLabel>
                   <p className="text-sm text-gray-600 mb-2">
-                    {view === 'edit'
-                      ? "Upload new images to ADD to the gallery."
-                      : "Upload additional views (e.g. 3 images recommended)."}
+                    Upload additional views. Selected images will be added to the list below.
                   </p>
-
-                  {/* Preview for Edit Mode - Just a count or list */}
-                  {view === 'edit' && editingProject?.gallery_urls?.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-xs font-bold text-gray-500 mb-2 uppercase">Current Gallery ({editingProject.gallery_urls.length} images):</p>
-                      <div className="flex gap-2 overflow-x-auto pb-2">
-                        {editingProject.gallery_urls.map((url: string, i: number) => (
-                          <img key={i} src={url} className="h-20 w-20 object-cover rounded border" />
-                        ))}
-                      </div>
-                      {/* Note: Deleting individual gallery images is a complex feature for later */}
-                    </div>
-                  )}
 
                   <FormControl>
                     <Input
@@ -495,13 +664,60 @@ export default function Admin() {
                       accept="image/*"
                       multiple
                       onChange={handleGalleryFilesChange}
-                      className="cursor-pointer bg-white"
+                      className="cursor-pointer bg-white mb-4"
                     />
                   </FormControl>
-                  {galleryFiles.length > 0 ? (
-                    <p className="text-xs text-green-600 font-medium">{galleryFiles.length} new files selected.</p>
-                  ) : (
-                    <p className="text-xs text-gray-400">No new images selected.</p>
+
+                  {/* PREVIEW AREA */}
+                  {(existingGalleryUrls.length > 0 || galleryFiles.length > 0) && (
+                    <div className="flex flex-wrap gap-4 mt-4">
+
+                      {/* Existing Images (Edit Mode) */}
+                      {existingGalleryUrls.map((url, i) => (
+                        <div key={`existing-${i}`} className="relative group w-24 h-24 border rounded overflow-hidden shadow-sm bg-white">
+                          <img src={url} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                          <div className="absolute top-0 right-0 p-1">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeExistingGalleryUrl(url)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] px-1 truncate">
+                            Saved
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* New Uploads */}
+                      {galleryFiles.map((file, i) => (
+                        <div key={`new-${i}`} className="relative group w-24 h-24 border-2 border-green-100 rounded overflow-hidden shadow-sm bg-white">
+                          <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} />
+                          <div className="absolute top-0 right-0 p-1">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6 rounded-full opacity-90 hover:opacity-100" // Always visible for new uploads usually better UX
+                              onClick={() => removeGalleryFile(i)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-green-600/80 text-white text-[10px] px-1 truncate">
+                            New
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {existingGalleryUrls.length === 0 && galleryFiles.length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No images in gallery yet.</p>
                   )}
                 </div>
 

@@ -49,11 +49,11 @@ export default function About() {
 
   const teamMembers = [
     { name: "Albert Oppong", role: "Construction Manager", img: member1 },
-    { name: "Team Member 2", role: "Architect", img: member2 },
+    { name: "Kwame Nkansah Boateng", role: "Architect", img: member2 },
     { name: "Eugenia Asabea Kwakye", role: "Architect", img: member3 },
     { name: "Nana Yaw Amoakohene", role: "Site Manager", img: member5 },
-    { name: "Team Member 5", role: "Architect", img: member6 },
-    { name: "Team Member 6", role: "Architect", img: member7 },
+    { name: "Victor Adom Mensah", role: "Architect", img: member6 },
+    { name: "Emmanuel Lawrence Mensah", role: "Architect", img: member7 },
     { name: "Team Member 7", role: "Architect", img: member8 },
     { name: "Team Member 8", role: "Architect", img: member9 },
     { name: "Team Member 9", role: "Architect", img: member10 },
@@ -226,11 +226,11 @@ export default function About() {
                   transition={{ delay: 0.1 * index }}
                   className="text-center group"
                 >
-                  <div className="w-full aspect-square mb-4 overflow-hidden rounded-full grayscale group-hover:grayscale-0 transition-all duration-500">
+                  <div className="w-full aspect-square mb-4 overflow-hidden rounded-full grayscale group-hover:grayscale-0 transition-all duration-500 relative isolate transform-gpu">
                     <img
                       src={member.img}
                       alt={member.name}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-700"
                     />
                   </div>
                   <h4 className="font-outfit text-lg font-medium text-black group-hover:text-orange transition-colors">
