@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroVideo from "../assets/backgroundvid.mp4";
 
 import { Project, getMainCategory, ProjectCategory } from "@/types";
@@ -38,12 +39,28 @@ const shuffleArray = <T,>(array: T[], seed: number) => {
 // -------------------------------
 
 export default function Portfolio() {
-  // 1. Main Category State (Default: Exterior)
-  const [activeMainFilter, setActiveMainFilter] = useState<ProjectCategory>("Exterior");
+  // 1. Main Category State (Default: Exterior, Persisted in Session Storage)
+  const [activeMainFilter, setActiveMainFilter] = useState<ProjectCategory>(() => {
+    return (sessionStorage.getItem("portfolioMainFilter") as ProjectCategory) || "Exterior";
+  });
 
   // 2. Sub Category State (Default: All for that main category, or explicit sub)
   // allowing null or "All" to show everything in that main category
   const [activeSubFilter, setActiveSubFilter] = useState<string>("All");
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
+    }
+  };
 
   const [dbProjects, setDbProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -98,6 +115,7 @@ export default function Portfolio() {
 
   const handleMainFilterChange = (cat: ProjectCategory) => {
     setActiveMainFilter(cat);
+    sessionStorage.setItem("portfolioMainFilter", cat);
     setActiveSubFilter("All"); // Reset sub filter when switching main
     setVisibleCount(9);
   };
@@ -171,34 +189,61 @@ export default function Portfolio() {
               ))}
             </div>
 
-            {/* LEVEL 2: Sub Categories (Pills/Tabs) */}
-            <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
+            {/* LEVEL 2: Sub Categories (Scrollable Horizontal List) */}
+            <div className="relative group/filters max-w-5xl mx-auto px-12">
+
+              {/* Left Arrow */}
               <button
-                onClick={() => setActiveSubFilter("All")}
-                className={cn(
-                  "px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border",
-                  activeSubFilter === "All"
-                    ? "bg-black text-white border-black"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
-                )}
+                onClick={scrollLeft}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-black hover:scale-110 transition-all opacity-0 group-hover/filters:opacity-100 hidden lg:block"
+                aria-label="Scroll left"
               >
-                ALL
+                <ChevronLeft size={32} strokeWidth={1.5} />
               </button>
 
-              {CATEGORY_MAP[activeMainFilter].map((sub) => (
+              {/* Scroll Container */}
+              <div
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto gap-3 lg:gap-4 no-scrollbar scroll-smooth px-4 snap-x snap-mandatory items-center"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
                 <button
-                  key={sub}
-                  onClick={() => setActiveSubFilter(sub)}
+                  onClick={() => setActiveSubFilter("All")}
                   className={cn(
-                    "px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border",
-                    activeSubFilter === sub
+                    "flex-shrink-0 px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border snap-center",
+                    activeSubFilter === "All"
                       ? "bg-black text-white border-black"
                       : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
                   )}
                 >
-                  {sub.toUpperCase()}
+                  ALL
                 </button>
-              ))}
+
+                {CATEGORY_MAP[activeMainFilter].map((sub) => (
+                  <button
+                    key={sub}
+                    onClick={() => setActiveSubFilter(sub)}
+                    className={cn(
+                      "flex-shrink-0 px-5 py-2 rounded-full text-sm font-outfit tracking-wider transition-all duration-300 border snap-center",
+                      activeSubFilter === sub
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
+                    )}
+                  >
+                    {sub.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+
+              {/* Right Arrow */}
+              <button
+                onClick={scrollRight}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 text-gray-400 hover:text-black hover:scale-110 transition-all opacity-0 group-hover/filters:opacity-100 hidden lg:block"
+                aria-label="Scroll right"
+              >
+                <ChevronRight size={32} strokeWidth={1.5} />
+              </button>
+
             </div>
           </div>
 

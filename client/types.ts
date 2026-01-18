@@ -23,11 +23,14 @@ export interface Project {
   category: string; // This stores the SubCategory string (e.g. "Residential")
   // We infer Main Category from the specific Category string
   location?: string;
+  year?: string;
+  role?: string;
   approx_area?: string;
   status: ProjectStatus;
   description: string;
   image_url: string;
   gallery_urls?: string[];
+  actual_gallery_urls?: string[];
   drawings?: { url: string; description: string }[];
 }
 

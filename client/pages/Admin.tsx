@@ -39,6 +39,8 @@ const formSchema = z.object({
   tagline: z.string().optional(),
   category: z.string().min(2, { message: "Category is required." }),
   location: z.string().optional(),
+  year: z.string().optional(),
+  role: z.string().optional(),
   approx_area: z.string().optional(),
   status: z.enum(["completed", "ongoing", "not-started"], {
     required_error: "Please select a project status.",
@@ -64,6 +66,10 @@ export default function Admin() {
   const [coverImage, setCoverImage] = useState<File | null>(null); // Single Main Image
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);   // Multiple Gallery Images
   const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>([]); // URLs kept during edit
+
+  // NEW: ACTUAL IMAGES STATE
+  const [actualGalleryFiles, setActualGalleryFiles] = useState<File[]>([]);
+  const [existingActualGalleryUrls, setExistingActualGalleryUrls] = useState<string[]>([]);
 
   // NEW: Track paths to delete from storage on save
   const [pathsToDelete, setPathsToDelete] = useState<string[]>([]);
@@ -138,6 +144,34 @@ export default function Admin() {
     }
   };
 
+  // HANDLER: Actual Gallery Images
+  const handleActualGalleryFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files);
+      setActualGalleryFiles(prev => [...prev, ...filesArray]);
+      e.target.value = "";
+    }
+  };
+
+  const removeActualGalleryFile = (index: number) => {
+    setActualGalleryFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingActualGalleryUrl = (urlToRemove: string) => {
+    setExistingActualGalleryUrls(prev => prev.filter(url => url !== urlToRemove));
+    setPathsToDelete(prev => [...prev, urlToRemove]);
+  };
+
+  // MOVE TO ACTUAL (from Render Gallery)
+  const markAsActual = (url: string) => {
+    // Remove from Gallery list
+    setExistingGalleryUrls(prev => prev.filter(u => u !== url));
+    // Add to Actual list
+    setExistingActualGalleryUrls(prev => [...prev, url]);
+
+    toast({ description: "Moved image to 'Actual' category." });
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
@@ -178,6 +212,8 @@ export default function Admin() {
     setCoverImage(null);
     setGalleryFiles([]);
     setExistingGalleryUrls([]);
+    setActualGalleryFiles([]);
+    setExistingActualGalleryUrls([]);
     setDrawingFiles({});
     setView('create');
   };
@@ -189,6 +225,8 @@ export default function Admin() {
       tagline: project.tagline || "",
       category: project.category,
       location: project.location || "",
+      year: project.year || "",
+      role: project.role || "",
       approx_area: project.approx_area || "",
       status: project.status,
       description: project.description,
@@ -206,8 +244,10 @@ export default function Admin() {
     setMainCategory(foundMain);
 
     setExistingGalleryUrls(project.gallery_urls || []); // Initialize with existing
+    setExistingActualGalleryUrls(project.actual_gallery_urls || []); // Initialize Actuals
     setCoverImage(null);
     setGalleryFiles([]); // Clear new uploads
+    setActualGalleryFiles([]);
     setDrawingFiles({});
     setView('edit');
   };
@@ -313,6 +353,33 @@ export default function Admin() {
       }
       // Strategy: Append to existing KEPT urls
       finalGalleryUrls = [...existingGalleryUrls, ...newGalleryUrls];
+
+      // 2.5 Upload ACTUAL Gallery Images
+      let newActualGalleryUrls: string[] = [];
+      if (actualGalleryFiles.length > 0) {
+        for (const file of actualGalleryFiles) {
+          const compressedFile = await compressFile(file);
+          const fExt = compressedFile.name.split(".").pop();
+          const fName = `actual-${Date.now()}-${Math.random().toString(36).substring(7)}.${fExt}`;
+
+          const { error: actError } = await supabase.storage
+            .from("project-images")
+            .upload(fName, compressedFile);
+
+          if (actError) {
+            console.error("Error upload actual:", actError);
+            continue;
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("project-images")
+            .getPublicUrl(fName);
+
+          newActualGalleryUrls.push(publicUrl);
+        }
+      }
+      const finalActualGalleryUrls = [...existingActualGalleryUrls, ...newActualGalleryUrls];
+
       // 3. Upload Drawing Images and Construct Drawings Array
       const drawingsData: { url: string, description: string }[] = [];
       const drawingDescriptions = values.drawings || [];
@@ -357,11 +424,14 @@ export default function Admin() {
         tagline: values.tagline,
         category: values.category,
         location: values.location,
+        year: values.year,
+        role: values.role,
         approx_area: values.approx_area,
         status: values.status,
         description: values.description,
         image_url: finalCoverUrl,
         gallery_urls: finalGalleryUrls,
+        actual_gallery_urls: finalActualGalleryUrls,
         drawings: drawingsData,
       };
 
@@ -578,6 +648,35 @@ export default function Admin() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
+                    name="year"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Year</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. 2024" {...field} className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Design & Build" {...field} className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
                     name="location"
                     render={({ field }) => (
                       <FormItem>
@@ -602,6 +701,17 @@ export default function Admin() {
                       </FormItem>
                     )}
                   />
+                </div>
+
+                <div className="bg-blue-50 border border-blue-100 p-4 rounded-md mb-8">
+                  <h3 className="text-blue-900 font-semibold flex items-center gap-2">
+                    <span className="bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded-full">New Feature</span>
+                    Render vs Actual
+                  </h3>
+                  <p className="text-sm text-blue-800 mt-1">
+                    You can now separate <strong>3D Renders</strong> from <strong>Actual Site Photos</strong>.
+                    Upload them in the respective sections below. You can also move an image from Renders to Actuals if needed.
+                  </p>
                 </div>
 
                 {/* MAIN COVER IMAGE SECTION */}
@@ -653,9 +763,9 @@ export default function Admin() {
 
                 {/* GALLERY IMAGES SECTION */}
                 <div className="space-y-4 p-6 bg-gray-50 border border-gray-100 rounded-lg">
-                  <FormLabel className="text-lg font-semibold text-gray-900">2. Project Gallery</FormLabel>
+                  <FormLabel className="text-lg font-semibold text-gray-900">2. 3D Renders</FormLabel>
                   <p className="text-sm text-gray-600 mb-2">
-                    Upload additional views. Selected images will be added to the list below.
+                    Upload 3D renders of the project. Selected images will be added to the list below.
                   </p>
 
                   <FormControl>
@@ -674,22 +784,36 @@ export default function Admin() {
 
                       {/* Existing Images (Edit Mode) */}
                       {existingGalleryUrls.map((url, i) => (
-                        <div key={`existing-${i}`} className="relative group w-24 h-24 border rounded overflow-hidden shadow-sm bg-white">
-                          <img src={url} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                          <div className="absolute top-0 right-0 p-1">
+                        <div key={`existing-${i}`} className="relative group w-32 h-32 border rounded overflow-hidden shadow-sm bg-white">
+                          <img src={url} className="w-full h-full object-cover opacity-100 group-hover:opacity-90 transition-opacity" />
+
+                          {/* DELETE BUTTON */}
+                          <div className="absolute top-1 right-1">
                             <Button
                               type="button"
                               variant="destructive"
                               size="icon"
-                              className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="h-6 w-6 rounded-full opacity-80 hover:opacity-100 shadow-md"
                               onClick={() => removeExistingGalleryUrl(url)}
+                              title="Delete Image"
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] px-1 truncate">
-                            Saved
+
+                          {/* MARK AS ACTUAL BUTTON */}
+                          <div className="absolute bottom-0 inset-x-0 p-1 bg-gradient-to-t from-black/80 to-transparent pt-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center pb-2">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              className="h-6 text-[10px] px-2 bg-white/90 text-black hover:bg-white"
+                              onClick={() => markAsActual(url)}
+                            >
+                              Mark Actual
+                            </Button>
                           </div>
+
                         </div>
                       ))}
 
@@ -718,6 +842,74 @@ export default function Admin() {
 
                   {existingGalleryUrls.length === 0 && galleryFiles.length === 0 && (
                     <p className="text-xs text-gray-400 italic">No images in gallery yet.</p>
+                  )}
+                </div>
+
+                {/* NEW: ACTUAL PHOTOS SECTION */}
+                <div className="space-y-4 p-6 bg-blue-50/50 border border-blue-100 rounded-lg">
+                  <FormLabel className="text-lg font-semibold text-blue-900">3. Actual Site Photos</FormLabel>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Upload real photos of the finished or ongoing project. These will appear in the "Actual" tab.
+                  </p>
+
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleActualGalleryFilesChange}
+                      className="cursor-pointer bg-white mb-4"
+                    />
+                  </FormControl>
+
+                  {/* PREVIEW AREA FOR ACTUALS */}
+                  {(existingActualGalleryUrls.length > 0 || actualGalleryFiles.length > 0) && (
+                    <div className="flex flex-wrap gap-4 mt-4">
+                      {/* Existing Actuals */}
+                      {existingActualGalleryUrls.map((url, i) => (
+                        <div key={`ex-act-${i}`} className="relative group w-24 h-24 border rounded overflow-hidden shadow-sm bg-white">
+                          <img src={url} className="w-full h-full object-cover" />
+                          <div className="absolute top-0 right-0 p-1">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeExistingActualGalleryUrl(url)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-blue-600/80 text-white text-[10px] px-1 truncate text-center">
+                            Actual
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* New Actual Uploads */}
+                      {actualGalleryFiles.map((file, i) => (
+                        <div key={`new-act-${i}`} className="relative group w-24 h-24 border-2 border-blue-200 rounded overflow-hidden shadow-sm bg-white">
+                          <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} />
+                          <div className="absolute top-0 right-0 p-1">
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6 rounded-full opacity-90 hover:opacity-100"
+                              onClick={() => removeActualGalleryFile(i)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-blue-500/80 text-white text-[10px] px-1 truncate text-center">
+                            New Actual
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {existingActualGalleryUrls.length === 0 && actualGalleryFiles.length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No actual photos uploaded yet.</p>
                   )}
                 </div>
 
@@ -831,6 +1023,6 @@ export default function Admin() {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }

@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import ImageLightbox from "@/components/ImageLightbox";
 import {
   Carousel,
@@ -11,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+
 
 import { Project } from "@/types";
 
@@ -22,11 +24,57 @@ const STATUS_LABELS: Record<string, string> = {
 
 
 
+// Helper Component for Grid
+const GalleryGrid = ({ images, onImageClick, startIndex }: { images: string[], onImageClick: (idx: number) => void, startIndex: number }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[300px] gap-4 grid-flow-dense">
+      {images.map((url, index) => {
+        // Global Lightbox Index
+        const lightboxIndex = startIndex + index;
+
+        // Perfect 16-cell block pattern (repeats every 7 items)
+        const patternIndex = index % 7;
+        let spanClass = "md:col-span-1 md:row-span-1";
+
+        if (patternIndex === 0) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Top Left)
+        else if (patternIndex === 1) spanClass = "md:col-span-2 md:row-span-1"; // 2x1 (Top Right)
+        else if (patternIndex === 2) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 1)
+        else if (patternIndex === 3) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 2)
+        else if (patternIndex === 4) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 1)
+        else if (patternIndex === 5) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 2)
+        else if (patternIndex === 6) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Bot Right)
+
+        return (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.05 }}
+            className={`relative cursor-pointer group overflow-hidden rounded-none ${spanClass}`}
+            onClick={() => onImageClick(lightboxIndex)}
+          >
+            <img
+              src={url}
+              alt={`Gallery ${index + 1}`}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 block"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
 export default function ProjectDetails() {
   const { id } = useParams();
 
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Tab State
+  const [activeTab, setActiveTab] = useState<'renders' | 'actual'>('renders');
 
   // Lightbox State
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -99,11 +147,13 @@ export default function ProjectDetails() {
     );
   }
 
-  // Prepare all images for the lightbox (Main + Gallery)
+  // Prepare all images for the lightbox (Main + Gallery + Actuals)
   // We can decide if Drawings should be in lightbox too. 
   // User said "aside the images of the project there should be a part where maybe just the drawings can show".
   // Let's keep lightbox for real photos for now, unless requested.
-  const allImages = [project.image_url, ...(project.gallery_urls || [])];
+  const galleryImages = project.gallery_urls || [];
+  const actualImages = project.actual_gallery_urls || [];
+  const allImages = [project.image_url, ...galleryImages, ...actualImages];
 
 
 
@@ -124,7 +174,7 @@ export default function ProjectDetails() {
             <img
               src={project.image_url}
               alt={project.title}
-              className="w-full h-full transform group-hover:scale-105 transition-transform duration-2000"
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-2000"
             />
             {/* Gradient Overlay for text readability if needed, but keeping it clean for now */}
             <div className="absolute inset-0 bg-black/10"></div>
@@ -176,6 +226,21 @@ export default function ProjectDetails() {
                   <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Type</span>
                   <span className="font-noto text-lg text-black">{project.category}</span>
                 </div>
+
+                {project.year && (
+                  <div>
+                    <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Year</span>
+                    <span className="font-noto text-lg text-black">{project.year}</span>
+                  </div>
+                )}
+
+                {project.role && (
+                  <div>
+                    <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Role</span>
+                    <span className="font-noto text-lg text-black">{project.role}</span>
+                  </div>
+                )}
+
                 {/* Placeholder for more metadata if added to DB later (Location, Year, Area) */}
                 <div>
                   <span className="block font-outfit text-xs font-bold uppercase text-gray-400 mb-1">Status</span>
@@ -271,51 +336,86 @@ export default function ProjectDetails() {
           </section>
         )}
 
-        {/* 3. GALLERY SECTION - Bento Grid Layout */}
-        {(project.gallery_urls && project.gallery_urls.length > 0) && (
+        {/* 3. GALLERY SECTION - Bento Grid Layout with Tabs */}
+        {(galleryImages.length > 0 || actualImages.length > 0) && (
           <section className="px-4 lg:px-12 py-24 lg:py-32 bg-white">
             <div className="container mx-auto mb-16 px-4">
               <h3 className="font-outfit text-xl font-bold uppercase text-gray-300">Project Gallery</h3>
             </div>
             <div className="container mx-auto">
-              {/* Added grid-flow-dense to help fill any tiny gaps if resizing occurs, though our math is perfect */}
-              <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[300px] gap-4 grid-flow-dense">
-                {project.gallery_urls.map((url, index) => {
-                  const lightboxIndex = index + 1;
 
-                  // Perfect 16-cell block pattern (repeats every 7 items)
-                  // Total cells: 4 + 2 + 1 + 1 + 2 + 2 + 4 = 16 cells (4 perfect rows)
-                  const patternIndex = index % 7;
-                  let spanClass = "md:col-span-1 md:row-span-1";
-
-                  if (patternIndex === 0) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Top Left)
-                  else if (patternIndex === 1) spanClass = "md:col-span-2 md:row-span-1"; // 2x1 (Top Right)
-                  else if (patternIndex === 2) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 1)
-                  else if (patternIndex === 3) spanClass = "md:col-span-1 md:row-span-1"; // 1x1 (Mid Right 2)
-                  else if (patternIndex === 4) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 1)
-                  else if (patternIndex === 5) spanClass = "md:col-span-1 md:row-span-2"; // 1x2 (Bot Left 2)
-                  else if (patternIndex === 6) spanClass = "md:col-span-2 md:row-span-2"; // 2x2 (Bot Right)
-
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.05 }}
-                      className={`relative cursor-pointer group overflow-hidden rounded-none ${spanClass}`}
-                      onClick={() => openLightbox(lightboxIndex)}
+              {/* Check if we need tabs (i.e. if Actuals exist) */}
+              {actualImages.length > 0 ? (
+                <div className="w-full">
+                  {/* Custom Styled Tabs matching Portfolio Filters */}
+                  <div className="flex justify-center gap-12 lg:gap-24 border-b border-gray-100/50 pb-6 mb-12">
+                    <button
+                      onClick={() => setActiveTab('renders')}
+                      className={cn(
+                        "font-outfit text-xl lg:text-3xl transition-all duration-300 relative py-2 uppercase tracking-wide",
+                        activeTab === 'renders'
+                          ? "text-black font-medium"
+                          : "text-gray-300 hover:text-gray-400 font-light"
+                      )}
                     >
-                      <img
-                        src={url}
-                        alt={`Gallery ${index + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 block"
+                      3D Renders
+                      {activeTab === 'renders' && (
+                        <motion.div
+                          layoutId="tab-indicator"
+                          className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange"
+                        />
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('actual')}
+                      className={cn(
+                        "font-outfit text-xl lg:text-3xl transition-all duration-300 relative py-2 uppercase tracking-wide",
+                        activeTab === 'actual'
+                          ? "text-black font-medium"
+                          : "text-gray-300 hover:text-gray-400 font-light"
+                      )}
+                    >
+                      Actual Photos
+                      {activeTab === 'actual' && (
+                        <motion.div
+                          layoutId="tab-indicator"
+                          className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange"
+                        />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Tab Content */}
+                  {activeTab === 'renders' && (
+                    galleryImages.length > 0 ? (
+                      <GalleryGrid
+                        images={galleryImages}
+                        onImageClick={openLightbox}
+                        startIndex={1} // 0 is cover
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                    ) : (
+                      <div className="text-center py-20 text-gray-400 font-light italic">No 3D renders available.</div>
+                    )
+                  )}
+
+                  {activeTab === 'actual' && (
+                    <GalleryGrid
+                      images={actualImages}
+                      onImageClick={openLightbox}
+                      startIndex={1 + galleryImages.length}
+                    />
+                  )}
+                </div>
+              ) : (
+                /* Default View (No Tabs) - Just Renders */
+                <GalleryGrid
+                  images={galleryImages}
+                  onImageClick={openLightbox}
+                  startIndex={1}
+                />
+              )}
+
             </div>
           </section>
         )}
