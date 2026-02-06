@@ -2,16 +2,16 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
 const CLIENT_LOGOS = [
-    "https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190",
-    "https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204",
-    "https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290",
-    "https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190",
-    "https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204",
-    "https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290",
-    "https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190",
-    "https://api.builder.io/api/v1/image/assets/TEMP/078f9a276aa9da700d98132fd4d0021ef2666fd4?width=204",
-    "https://api.builder.io/api/v1/image/assets/TEMP/a7e026de1ebed0e193750fd7edf9c116910d2145?width=290",
-    "https://api.builder.io/api/v1/image/assets/TEMP/cdb403e1c62799afe9819a606f4f6fb9ba543d3c?width=190",
+    "https://placehold.co/190x80?text=Client+1",
+    "https://placehold.co/204x80?text=Client+2",
+    "https://placehold.co/290x80?text=Client+3",
+    "https://placehold.co/190x80?text=Client+4",
+    "https://placehold.co/204x80?text=Client+5",
+    "https://placehold.co/290x80?text=Client+6",
+    "https://placehold.co/190x80?text=Client+7",
+    "https://placehold.co/204x80?text=Client+8",
+    "https://placehold.co/290x80?text=Client+9",
+    "https://placehold.co/190x80?text=Client+10",
 ];
 
 export default function CarouselSection() {
