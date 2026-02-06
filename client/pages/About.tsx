@@ -15,8 +15,8 @@ import member8 from "@/assets/Team/member8.png";
 import member9 from "@/assets/Team/member9.png";
 import member10 from "@/assets/Team/member10.png";
 // New Assets
-import aboutHeroImg from "@/assets/about hero image.jpg";
-import teamGroupImg from "@/assets/Team group.jpg"; // Note: Filename has space
+import aboutHeroImg from "@/assets/about_hero_image.jpg";
+import teamGroupImg from "@/assets/Team_group.jpg";
 
 export default function About() {
   const coreValues = [
