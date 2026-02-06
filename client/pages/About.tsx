@@ -2,18 +2,18 @@ import { Link } from "react-router-dom";
 import StickyServicesSection from "@/components/StickyServicesSection";
 import { motion } from "framer-motion";
 // Team Images
-import principalLead from "@/assets/team/principal architect and team lead.png";
-import principalHop from "@/assets/team/principal architect and HoP.png";
-import member1 from "@/assets/team/member1.png";
-import member2 from "@/assets/team/member2.png";
-import member3 from "@/assets/team/member3.png";
-import member4 from "@/assets/team/member4.png";
-import member5 from "@/assets/team/member5.png";
-import member6 from "@/assets/team/member6.png";
-import member7 from "@/assets/team/member7.png";
-import member8 from "@/assets/team/member8.png";
-import member9 from "@/assets/team/member9.png";
-import member10 from "@/assets/team/member10.png";
+import principalLead from "@/assets/Team/principal architect and team lead.png";
+import principalHop from "@/assets/Team/principal architect and HoP.png";
+import member1 from "@/assets/Team/member1.png";
+import member2 from "@/assets/Team/member2.png";
+import member3 from "@/assets/Team/member3.png";
+import member4 from "@/assets/Team/member4.png";
+import member5 from "@/assets/Team/member5.png";
+import member6 from "@/assets/Team/member6.png";
+import member7 from "@/assets/Team/member7.png";
+import member8 from "@/assets/Team/member8.png";
+import member9 from "@/assets/Team/member9.png";
+import member10 from "@/assets/Team/member10.png";
 // New Assets
 import aboutHeroImg from "@/assets/about hero image.jpg";
 import teamGroupImg from "@/assets/Team group.jpg"; // Note: Filename has space
