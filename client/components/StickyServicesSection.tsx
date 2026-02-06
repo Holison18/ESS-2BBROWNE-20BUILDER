@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // Service Images
-import designImg from "@/assets/Services/Design.jpg";
-import remodelImg from "@/assets/Services/Remodel.jpg";
-import innovateImg from "@/assets/Services/Innovate.jpg";
+import designImg from "@/assets/ourservices/design.jpg";
+import remodelImg from "@/assets/ourservices/remodel.jpg";
+import innovateImg from "@/assets/ourservices/innovate.jpg";
 
 const services = [
   {
