@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import StickyServicesSection from "@/components/StickyServicesSection";
 import { motion } from "framer-motion";
 // Team Images
-import principalLead from "@/assets/Team/principal architect and team lead.png";
-import principalHop from "@/assets/Team/principal architect and HoP.png";
+import principalLead from "@/assets/Team/principalarchitectandteamlead.png";
+import principalHop from "@/assets/Team/principalarchitectandHoP.png";
 import member1 from "@/assets/Team/member1.png";
 import member2 from "@/assets/Team/member2.png";
 import member3 from "@/assets/Team/member3.png";
