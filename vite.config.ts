@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     fs: {
       allow: [
-        path.resolve(__dirname, "."),       
+        path.resolve(__dirname, "."),
         path.resolve(__dirname, "./client"),
         path.resolve(__dirname, "./shared"),
       ],
@@ -19,6 +19,16 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist/spa",
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          three: ["three", "@react-three/fiber", "@react-three/drei"],
+          ui: ["framer-motion", "lucide-react", "recharts"],
+        },
+      },
+    },
   },
   plugins: [react(), expressPlugin()],
   resolve: {
