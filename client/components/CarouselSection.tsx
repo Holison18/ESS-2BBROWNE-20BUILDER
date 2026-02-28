@@ -1,17 +1,22 @@
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
+import rwesckLogo from "../assets/clients_logo/RWESCK.png";
+import smsLogo from "../assets/clients_logo/SMS.png";
+import engineeringLogo from "../assets/clients_logo/engineering.png";
+import kcarpLogo from "../assets/clients_logo/kcarp_logo.png";
+import knustLogo from "../assets/clients_logo/knust_logo.png";
+import mastercardLogo from "../assets/clients_logo/mastercard.png";
+import ncelLogo from "../assets/clients_logo/ncel_logo.png";
+
 const CLIENT_LOGOS = [
-    "https://placehold.co/190x80?text=Client+1",
-    "https://placehold.co/204x80?text=Client+2",
-    "https://placehold.co/290x80?text=Client+3",
-    "https://placehold.co/190x80?text=Client+4",
-    "https://placehold.co/204x80?text=Client+5",
-    "https://placehold.co/290x80?text=Client+6",
-    "https://placehold.co/190x80?text=Client+7",
-    "https://placehold.co/204x80?text=Client+8",
-    "https://placehold.co/290x80?text=Client+9",
-    "https://placehold.co/190x80?text=Client+10",
+    { src: rwesckLogo, name: 'RWESCK', customClass: '' },
+    { src: smsLogo, name: 'SMS', customClass: '' },
+    { src: engineeringLogo, name: 'Engineering', customClass: '' },
+    { src: kcarpLogo, name: 'KCARP', customClass: '' },
+    { src: knustLogo, name: 'KNUST', customClass: '' },
+    { src: mastercardLogo, name: 'Mastercard', customClass: '' },
+    { src: ncelLogo, name: 'NCEL', customClass: 'invert' },
 ];
 
 export default function CarouselSection() {
@@ -27,16 +32,16 @@ export default function CarouselSection() {
             <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
             <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">
-                    {CLIENT_LOGOS.map((src, index) => (
+                <div className="flex items-center">
+                    {CLIENT_LOGOS.map((logo, index) => (
                         <div
                             key={index}
                             className="flex-[0_0_20%] min-w-0 flex justify-center items-center px-4"
                         >
                             <img
-                                src={src}
-                                alt={`Client ${index + 1}`}
-                                className="h-16 lg:h-20 w-auto object-contain opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                                src={logo.src}
+                                alt={`${logo.name} Client Logo`}
+                                className={`h-16 lg:h-20 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500 ${logo.customClass}`}
                             />
                         </div>
                     ))}
