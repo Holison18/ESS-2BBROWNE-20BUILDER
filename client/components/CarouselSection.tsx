@@ -28,20 +28,20 @@ export default function CarouselSection() {
     return (
         <div className="w-full relative">
             {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
             <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">
+                <div className="flex -ml-4 items-center h-32 sm:h-auto">
                     {CLIENT_LOGOS.map((src, index) => (
                         <div
                             key={index}
-                            className="flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_20%] min-w-0 flex justify-center items-center px-4"
+                            className="flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_20%] min-w-0 flex justify-center items-center pl-4"
                         >
                             <img
                                 src={src}
                                 alt={`Client ${index + 1}`}
-                                className="h-16 lg:h-20 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                                className="h-24 sm:h-20 lg:h-28 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
                             />
                         </div>
                     ))}

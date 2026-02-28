@@ -109,9 +109,9 @@ export default function Index() {
       </section>
 
       {/* 2. INTRO SECTION - Minimal Text + Stats */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="py-12 pt-16 lg:py-32 bg-white mt-8 lg:mt-0">
         <div className="container mx-auto px-4 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-24 items-start">
 
             {/* Left: Text */}
             <motion.div
@@ -120,22 +120,22 @@ export default function Index() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-black font-outfit text-4xl lg:text-6xl font-light mb-8 leading-tight">
+              <h2 className="text-black font-outfit text-3xl sm:text-4xl lg:text-6xl font-light mb-4 lg:mb-8 leading-tight">
                 ESS + <span className="font-bold">BROWNE</span>
               </h2>
-              <p className="text-gray-600 font-noto text-xl lg:text-2xl font-light leading-relaxed mb-8">
+              <p className="text-gray-600 font-noto text-base sm:text-lg lg:text-2xl font-light leading-relaxed mb-4 lg:mb-8">
                 A dynamic design and build company transforming visions into <span className="text-orange italic">reality</span>.
               </p>
-              <p className="text-gray-500 font-noto text-lg leading-relaxed mb-8">
+              <p className="text-gray-500 font-noto text-sm sm:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8">
                 With a passion for design excellence and a commitment to quality construction, we create functional, sustainable, and aesthetically pleasing spaces.
               </p>
-              <Link to="/about" className="text-orange font-bold font-outfit uppercase tracking-widest border-b-2 border-orange pb-1 hover:text-black hover:border-black transition-all">
+              <Link to="/about" className="text-orange font-bold font-outfit text-xs sm:text-sm lg:text-base uppercase tracking-widest border-b-2 border-orange pb-1 hover:text-black hover:border-black transition-all">
                 More About Us
               </Link>
             </motion.div>
 
             {/* Right: Counters - Minimal Grid */}
-            <div className="grid grid-cols-2 gap-y-12 gap-x-8">
+            <div className="grid grid-cols-2 gap-y-6 lg:gap-y-12 gap-x-2 sm:gap-x-8 mt-8 lg:mt-0">
               {[
                 { val: 10, label: "Years Experience" },
                 { val: 50, label: "Completed Projects" },
@@ -153,12 +153,12 @@ export default function Index() {
                     type: "spring",
                     stiffness: 100
                   }}
-                  className="flex flex-col border-l border-gray-200 pl-6 hover:border-orange transition-colors duration-300"
+                  className="flex flex-col border-l border-gray-200 pl-3 sm:pl-6 hover:border-orange transition-colors duration-300"
                 >
-                  <span className="font-outfit text-5xl lg:text-6xl font-bold text-black mb-2">
+                  <span className="font-outfit text-3xl sm:text-4xl lg:text-6xl font-bold text-black mb-1 sm:mb-2">
                     <Counter value={stat.val} suffix="+" />
                   </span>
-                  <span className="font-noto text-gray-400 text-sm uppercase tracking-wider">{stat.label}</span>
+                  <span className="font-noto text-gray-400 text-[10px] sm:text-xs lg:text-sm uppercase tracking-wider">{stat.label}</span>
                 </motion.div>
               ))}
             </div>
@@ -276,9 +276,9 @@ export default function Index() {
       </section>
 
       {/* 5. CLIENTS - Clean Header */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-12 lg:py-24 bg-gray-50">
         <div className="container mx-auto px-4 lg:px-20">
-          <h2 className="text-center font-outfit text-2xl font-light text-gray-400 uppercase tracking-[0.2em] mb-16">
+          <h2 className="text-center font-outfit text-xl lg:text-2xl font-light text-gray-400 uppercase tracking-[0.2em] mb-8 lg:mb-16">
             Trusted By
           </h2>
           <div className="px-4 lg:px-0">
