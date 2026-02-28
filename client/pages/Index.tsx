@@ -6,14 +6,14 @@ import ImageLightbox from "../components/ImageLightbox";
 import CarouselSection from "../components/CarouselSection";
 
 // Import Images
-import viewplaneMain from "../assets/Featured Projects/viewplane_main.jpg";
-import viewplaneFront from "../assets/Featured Projects/viewplane_front.jpg";
-import viewplaneSide1 from "../assets/Featured Projects/viewplane_side1.jpg";
-import viewplaneSide2 from "../assets/Featured Projects/viewplane_side2.jpg";
-import edintronMain from "../assets/Featured Projects/edintron_main.jpg";
-import edintronFront from "../assets/Featured Projects/edintron_front.jpg";
-import edintronSide1 from "../assets/Featured Projects/edintron_side1.jpg";
-import edintronSide2 from "../assets/Featured Projects/edintron_side2.jpg";
+import viewplaneMain from "../assets/feature_projects/viewplane_main.jpg";
+import viewplaneFront from "../assets/feature_projects/viewplane_front.jpg";
+import viewplaneSide1 from "../assets/feature_projects/viewplane_side1.jpg";
+import viewplaneSide2 from "../assets/feature_projects/viewplane_side2.jpg";
+import edintronMain from "../assets/feature_projects/edintron_main.jpg";
+import edintronFront from "../assets/feature_projects/edintron_front.jpg";
+import edintronSide1 from "../assets/feature_projects/edintron_side1.jpg";
+import edintronSide2 from "../assets/feature_projects/edintron_side2.jpg";
 
 function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -199,7 +199,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 4. FEATURED PROJECTS - Refined Layout */}
+      {/* 4. feature_projects - Refined Layout */}
       <section className="py-24 lg:py-32 bg-white">
         <div className="container mx-auto px-4 lg:px-20">
 
