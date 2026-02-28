@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    outDir: "dist/spa",
+    outDir: "dist",
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
