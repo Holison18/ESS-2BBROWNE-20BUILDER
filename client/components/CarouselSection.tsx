@@ -36,7 +36,7 @@ export default function CarouselSection() {
                     {CLIENT_LOGOS.map((src, index) => (
                         <div
                             key={index}
-                            className="flex-[0_0_20%] min-w-0 flex justify-center items-center px-4"
+                            className="flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_20%] min-w-0 flex justify-center items-center px-4"
                         >
                             <img
                                 src={src}
