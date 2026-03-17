@@ -27,11 +27,11 @@ jobs:
           echo "Pinging Supabase to prevent project pause..."
           
           # We ping a standard health-check endpoint or a generic REST endpoint. 
-          # Pinging the root /rest/v1/ is extremely lightweight and counts as API activity.
+          # Pinging a non-existent table (e.g. _keepalive_dummy_table) is extremely lightweight and counts as API activity.
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "${SUPABASE_URL}/rest/v1/")
+            "${SUPABASE_URL}/rest/v1/_keepalive_dummy_table")
             
           if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 400 ] || [ "$HTTP_STATUS" -eq 404 ]; then
             echo "Successfully reached Supabase API. (Status: $HTTP_STATUS)"
