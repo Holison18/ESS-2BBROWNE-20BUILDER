@@ -26,16 +26,17 @@ jobs:
           
           echo "Pinging Supabase to prevent project pause..."
           
-          # We ping a standard health-check endpoint or a generic REST endpoint. 
-          # Pinging a non-existent table (e.g. _keepalive_dummy_table) is extremely lightweight and counts as API activity.
+          # We ping a real table ('projects') with limit=1 to ensure the request is valid and extremely lightweight. 
+          # Successful queries count as API activity to keep the free-tier project alive.
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "${SUPABASE_URL}/rest/v1/_keepalive_dummy_table")
+            "${SUPABASE_URL}/rest/v1/projects?select=id&limit=1")
             
-          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 400 ] || [ "$HTTP_STATUS" -eq 404 ]; then
-            echo "Successfully reached Supabase API. (Status: $HTTP_STATUS)"
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "Successfully reached Supabase API and queried 'projects' table. (Status: $HTTP_STATUS)"
           else
             echo "Failed to reach Supabase API. Unexpected status: $HTTP_STATUS"
+            echo "Ensure your VITE_PUBLIC_SUPABASE_URL and VITE_PUBLIC_SUPABASE_ANON_KEY are correct and the 'projects' table exists."
             exit 1
           fi
