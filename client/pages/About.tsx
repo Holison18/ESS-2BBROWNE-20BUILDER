@@ -49,15 +49,13 @@ export default function About() {
 
   const teamMembers = [
     { name: "Albert Oppong", role: "Construction Manager", img: member1 },
-    { name: "Kwame Nkansah Boateng", role: "Architect", img: member2 },
-    { name: "Eugenia Asabea Kwakye", role: "Architect", img: member3 },
+    { name: "Kwame Nkansah Boateng", role: "Junior Architect", img: member2 },
+    { name: "Eugenia Asabea Kwakye", role: "Junior Architect", img: member3 },
     { name: "Nana Yaw Amoakohene", role: "Site Manager", img: member5 },
-    { name: "Victor Adom Mensah", role: "Architect", img: member6 },
-    { name: "Emmanuel Lawrence Mensah", role: "Architect", img: member7 },
-    { name: "Team Member 7", role: "Architect", img: member8 },
-    { name: "Team Member 8", role: "Architect", img: member9 },
-    { name: "Team Member 9", role: "Architect", img: member10 },
-    { name: "Team Member 10", role: "Architect", img: member4 }, // Reused for grid
+    { name: "Victor Adom Mensah", role: "Quantity Surveyor", img: member6 },
+    { name: "Emmanuel Lawrence Mensah", role: "Junior Architect", img: member7 },
+    { name: "Lois Peprah", role: "Junior Architect", img: member9 },
+    { name: "Angela Owusu", role: "Junior Architect", img: member10 }, // Reused for grid
   ];
 
   return (
