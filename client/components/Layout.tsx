@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import ScrollToTopButton from "./ScrollToTopButton";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -6,24 +7,25 @@ import Footer from "./Footer";
 export default function Layout() {
     const location = useLocation();
 
-    // Hide standard Header/Footer on Admin? 
-    // Usually Admin has its own layout. 
-    // But assuming the user wants them on public pages.
-    // The previous app routing (App.tsx) had Layout wrapping all public routes including admin?
-    // Let's check App.tsx again.
-    // Admin is wrapped in ProtectedRoute, under Layout? 
-    // Line 29: <Route element={<Layout />}> wrap ALL routes.
-    // Admin usually shouldn't have the public footer/header if it's a dashboard.
-    // But let's stick to the prompt: "I don't like how I have to repeat the same code in all the pages."
-    // Admin wasn't mentioned specifically but "ProjectDetails" and "Index" were.
-    // Let's hide them on Admin just in case, or keep them if that was the status quo.
-    // Admin page usually has sidebar. The public header might look weird.
-    // Checking previous App.tsx: Admin is inside Layout.
-    // Did Admin.tsx have its own header?
-    // I haven't seen Admin.tsx content recently.
-    // Safe bet: Show them everywhere for now, unless path starts with /admin.
+    useEffect(() => {
+        const path = location.pathname;
+        if (path === "/") {
+            document.title = "ESS + BROWNE | Contemporary Architecture & Design Studio | Kumasi, Ghana";
+        } else if (path.startsWith("/about")) {
+            document.title = "About Us | ESS + BROWNE Architects | Kumasi, Ghana";
+        } else if (path.startsWith("/portfolio")) {
+            document.title = "Architecture Portfolio & Projects | ESS + BROWNE";
+        } else if (path.startsWith("/contact")) {
+            document.title = "Contact Us | ESS + BROWNE Architects | Kumasi, Ghana";
+        } else if (path.startsWith("/login")) {
+            document.title = "Admin Portal | ESS + BROWNE";
+        } else if (path.startsWith("/admin")) {
+            document.title = "Admin Dashboard | ESS + BROWNE";
+        }
+    }, [location.pathname]);
 
     const isAdmin = location.pathname.startsWith("/admin");
+
 
     return (
         <div className="flex flex-col min-h-screen">
