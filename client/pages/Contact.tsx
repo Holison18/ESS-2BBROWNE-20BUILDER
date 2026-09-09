@@ -133,7 +133,7 @@ export default function Contact() {
               <div className="p-8 border border-gray-100 hover:border-orange/20 transition-colors group">
                 <h3 className="font-outfit text-xl font-bold mb-4 group-hover:text-orange transition-colors">Contact</h3>
                 <p className="font-noto text-gray-500 text-sm leading-relaxed mb-2">
-                  <a href="mailto:info@essbrowne.com" className="hover:text-black transition-colors">info@essbrowne.com</a>
+                  <a href="mailto:info@essandbrowne.com" className="hover:text-black transition-colors">info@essandbrowne.com</a>
                 </p>
                 <p className="font-noto text-gray-500 text-sm leading-relaxed">
                   <a href="tel:+233541234567" className="hover:text-black transition-colors">+233 54 123 4567</a>

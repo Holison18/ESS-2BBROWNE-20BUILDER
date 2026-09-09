@@ -21,7 +21,7 @@ export default function Footer() {
                         </div>
 
                         <p className="text-text-grey font-noto text-lg">
-                            info@essbrown.com
+                            info@essandbrowne.com
                         </p>
 
                         <div>
