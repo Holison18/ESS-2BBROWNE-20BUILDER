@@ -10,3 +10,20 @@
 export interface DemoResponse {
   message: string;
 }
+
+export interface ContactRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  countryCode?: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+export interface ContactResponse {
+  success: boolean;
+  message?: string;
+  id?: string;
+  error?: string;
+}

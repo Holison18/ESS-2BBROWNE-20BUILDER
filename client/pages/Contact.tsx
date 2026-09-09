@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { ContactResponse } from "@shared/api";
 // import logo from "../assets/logo.png"; // Removed
 
 // Schema for form validation
@@ -55,22 +56,44 @@ export default function Contact() {
     },
   });
 
-  // Handle "Send Message" (Email Simulation)
-  function onEmailSubmit(values: z.infer<typeof formSchema>) {
+  // Handle "Send Message"
+  async function onEmailSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    // In a real app, you would call an API endpoint or EmailJS here.
-    // For now, we simulate a success.
-    setTimeout(() => {
-      console.log("Email sent:", values);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data: ContactResponse = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to send message.");
+      }
+
       toast({
         title: "Message Sent",
         description:
-          "We've received your message and will get back to you soon.",
+          "Thank you! Your message has been sent to info@essandbrowne.com.",
       });
-      setIsSubmitting(false);
       form.reset();
-    }, 1000);
+    } catch (error: any) {
+      console.error("Error submitting contact form:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to Send Message",
+        description:
+          error.message ||
+          "There was an error sending your message. Please try again or WhatsApp us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
 
   // Handle "Send to WhatsApp"
   function onWhatsAppSubmit() {

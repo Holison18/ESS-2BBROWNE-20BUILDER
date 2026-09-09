@@ -86,7 +86,7 @@ export default function Login() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="admin@essbrowne.com" {...field} />
+                    <Input placeholder="admin@essandbrowne.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

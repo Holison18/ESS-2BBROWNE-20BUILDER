@@ -1,15 +1,7 @@
-import path from "path";
-import "dotenv/config";
-import * as express from "express";
-import express__default from "express";
-import cors from "cors";
-const handleDemo = (req, res) => {
-  const response = {
-    message: "Hello from Express server"
-  };
-  res.status(200).json(response);
-};
-const handleContact = async (req, res) => {
+import { RequestHandler } from "express";
+import { ContactRequest, ContactResponse } from "@shared/api";
+
+export const handleContact: RequestHandler = async (req, res) => {
   try {
     const {
       firstName,
@@ -18,26 +10,33 @@ const handleContact = async (req, res) => {
       countryCode = "+233",
       phone,
       subject,
-      message
-    } = req.body;
+      message,
+    } = req.body as ContactRequest;
+
+    // Basic validation
     if (!firstName || !lastName || !email || !message || !subject) {
       res.status(400).json({
         success: false,
-        error: "Missing required contact fields."
-      });
+        error: "Missing required contact fields.",
+      } as ContactResponse);
       return;
     }
+
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       console.error("RESEND_API_KEY environment variable is not set.");
       res.status(500).json({
         success: false,
-        error: "Email service is not configured. Please set RESEND_API_KEY."
-      });
+        error: "Email service is not configured. Please set RESEND_API_KEY.",
+      } as ContactResponse);
       return;
     }
-    const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || "info@essandbrowne.com";
-    const fromEmail = process.env.CONTACT_FROM_EMAIL || "ESS + BROWNE <info@essandbrowne.com>";
+
+    const receiverEmail =
+      process.env.CONTACT_RECEIVER_EMAIL || "info@essandbrowne.com";
+    const fromEmail =
+      process.env.CONTACT_FROM_EMAIL || "ESS + BROWNE <info@essandbrowne.com>";
+
     const htmlContent = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px; background-color: #ffffff;">
         <div style="border-bottom: 2px solid #EA580C; padding-bottom: 16px; margin-bottom: 24px;">
@@ -78,6 +77,7 @@ const handleContact = async (req, res) => {
         </div>
       </div>
     `;
+
     const textContent = `
 New Contact Inquiry from ESS + BROWNE Website
 
@@ -89,12 +89,14 @@ Subject: ${subject}
 Message:
 ${message}
     `.trim();
-    const sendWithResend = async (from) => {
+
+    // Helper to call Resend
+    const sendWithResend = async (from: string) => {
       return await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           from,
@@ -102,12 +104,16 @@ ${message}
           reply_to: email,
           subject: `[Website Inquiry] ${subject} - ${firstName} ${lastName}`,
           html: htmlContent,
-          text: textContent
-        })
+          text: textContent,
+        }),
       });
     };
+
     let resendResponse = await sendWithResend(fromEmail);
-    let resendData = await resendResponse.json();
+    let resendData = (await resendResponse.json()) as any;
+
+    // If sending fails due to unverified domain and we didn't use onboarding@resend.dev,
+    // retry once with onboarding@resend.dev
     if (!resendResponse.ok && !fromEmail.includes("onboarding@resend.dev")) {
       console.warn(
         `Resend send with "${fromEmail}" failed (${resendData.message || resendResponse.statusText}). Retrying with onboarding@resend.dev...`
@@ -116,65 +122,31 @@ ${message}
       const fallbackResponse = await sendWithResend(fallbackFrom);
       if (fallbackResponse.ok) {
         resendResponse = fallbackResponse;
-        resendData = await fallbackResponse.json();
+        resendData = (await fallbackResponse.json()) as any;
       }
     }
+
     if (!resendResponse.ok) {
       console.error("Resend API error:", resendData);
       res.status(resendResponse.status).json({
         success: false,
-        error: resendData.message || "Failed to send email through Resend. Please check your domain verification or email settings."
-      });
+        error:
+          resendData.message ||
+          "Failed to send email through Resend. Please check your domain verification or email settings.",
+      } as ContactResponse);
       return;
     }
+
     res.json({
       success: true,
       message: "Your message has been sent successfully!",
-      id: resendData.id
-    });
-  } catch (error) {
+      id: resendData.id,
+    } as ContactResponse);
+  } catch (error: any) {
     console.error("Error handling contact form submission:", error);
     res.status(500).json({
       success: false,
-      error: error.message || "An unexpected error occurred while sending message."
-    });
+      error: error.message || "An unexpected error occurred while sending message.",
+    } as ContactResponse);
   }
 };
-function createServer() {
-  const app2 = express__default();
-  app2.use(cors());
-  app2.use(express__default.json());
-  app2.use(express__default.urlencoded({ extended: true }));
-  app2.get("/api/ping", (_req, res) => {
-    const ping = process.env.PING_MESSAGE ?? "ping";
-    res.json({ message: ping });
-  });
-  app2.get("/api/demo", handleDemo);
-  app2.post("/api/contact", handleContact);
-  return app2;
-}
-const app = createServer();
-const port = process.env.PORT || 3e3;
-const __dirname$1 = import.meta.dirname;
-const distPath = path.join(__dirname$1, "../spa");
-app.use(express.static(distPath));
-app.get("*", (req, res) => {
-  if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
-    return res.status(404).json({ error: "API endpoint not found" });
-  }
-  res.sendFile(path.join(distPath, "index.html"));
-});
-app.listen(port, () => {
-  console.log(`🚀 Fusion Starter server running on port ${port}`);
-  console.log(`📱 Frontend: http://localhost:${port}`);
-  console.log(`🔧 API: http://localhost:${port}/api`);
-});
-process.on("SIGTERM", () => {
-  console.log("🛑 Received SIGTERM, shutting down gracefully");
-  process.exit(0);
-});
-process.on("SIGINT", () => {
-  console.log("🛑 Received SIGINT, shutting down gracefully");
-  process.exit(0);
-});
-//# sourceMappingURL=node-build.mjs.map
