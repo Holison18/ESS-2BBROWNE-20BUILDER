@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/api/contact", "destination": "/api/contact" },
+    { "source": "/api/ping", "destination": "/api/ping" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
+
 }

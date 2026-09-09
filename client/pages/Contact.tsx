@@ -68,7 +68,14 @@ export default function Contact() {
         body: JSON.stringify(values),
       });
 
-      const data: ContactResponse = await response.json();
+      let data: Partial<ContactResponse> = {};
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        data = { success: false, error: text || "Server error occurred." };
+      }
 
       if (!response.ok || !data.success) {
         throw new Error(data.error || "Failed to send message.");
@@ -80,6 +87,7 @@ export default function Contact() {
           "Thank you! Your message has been sent to info@essandbrowne.com.",
       });
       form.reset();
+
     } catch (error: any) {
       console.error("Error submitting contact form:", error);
       toast({
