@@ -21,7 +21,9 @@ export default function Footer() {
                         </div>
 
                         <p className="text-text-grey font-noto text-lg">
-                            info@essandbrowne.com
+                            <a href="mailto:info@essandbrowne.com" className="underline underline-offset-4 decoration-text-grey/50 hover:decoration-orange hover:text-orange transition-colors">
+                                info@essandbrowne.com
+                            </a>
                         </p>
 
                         <div>
@@ -44,6 +46,7 @@ export default function Footer() {
                             <Link to="/portfolio" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Portfolio</Link>
                             <Link to="/about" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">About Us</Link>
                             <Link to="/contact" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Contact</Link>
+                            <Link to="/careers" className="text-text-grey font-noto text-lg hover:text-orange transition-colors">Careers</Link>
                         </div>
                     </div>
 

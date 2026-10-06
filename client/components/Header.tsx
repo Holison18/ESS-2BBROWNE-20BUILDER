@@ -69,6 +69,9 @@ export default function Header() {
                         <Link to="/contact" className={`${linkBaseClasses} ${hoverClass} ${location.pathname === "/contact" ? "text-orange" : ""}`}>
                             CONTACT
                         </Link>
+                        <Link to="/careers" className={`${linkBaseClasses} ${hoverClass} ${location.pathname === "/careers" ? "text-orange" : ""}`}>
+                            CAREERS
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -125,6 +128,13 @@ export default function Header() {
                             onClick={closeMenu}
                         >
                             Contact
+                        </Link>
+                        <Link
+                            to="/careers"
+                            className="font-outfit text-2xl text-black hover:text-orange font-bold uppercase tracking-widest"
+                            onClick={closeMenu}
+                        >
+                            Careers
                         </Link>
                     </motion.div>
                 )}

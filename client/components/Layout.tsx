@@ -17,6 +17,12 @@ export default function Layout() {
             document.title = "Architecture Portfolio & Projects | ESS + BROWNE";
         } else if (path.startsWith("/contact")) {
             document.title = "Contact Us | ESS + BROWNE Architects | Kumasi, Ghana";
+        } else if (path.startsWith("/careers/apply")) {
+            document.title = "Apply for Career | ESS + BROWNE Architects";
+        } else if (path.startsWith("/internships/apply")) {
+            document.title = "Apply for Internship | ESS + BROWNE Architects";
+        } else if (path.startsWith("/careers")) {
+            document.title = "Careers | ESS + BROWNE Architects | Kumasi, Ghana";
         } else if (path.startsWith("/login")) {
             document.title = "Admin Portal | ESS + BROWNE";
         } else if (path.startsWith("/admin")) {

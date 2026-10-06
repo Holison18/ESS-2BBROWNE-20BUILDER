@@ -3,6 +3,7 @@ import "dotenv/config";
 import * as express from "express";
 import express__default from "express";
 import cors from "cors";
+import multer from "multer";
 const handleDemo = (req, res) => {
   const response = {
     message: "Hello from Express server"
@@ -140,8 +141,167 @@ ${message}
     });
   }
 };
+const handleInternship = async (req, res) => {
+  try {
+    const { name, email, phone, message, portfolioUrl } = req.body;
+    const file = req.file;
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY environment variable is not set.");
+      res.status(500).json({ success: false, message: "Email service is not configured. Please set RESEND_API_KEY." });
+      return;
+    }
+    const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || "info@essandbrowne.com";
+    const fromEmail = process.env.CONTACT_FROM_EMAIL || "ESS + BROWNE Internships <info@essandbrowne.com>";
+    const attachments = [];
+    if (file) {
+      attachments.push({
+        filename: file.originalname,
+        content: file.buffer.toString("base64")
+      });
+    }
+    const htmlContent = `
+      <div style="font-family: sans-serif; max-width: 600px; padding: 20px;">
+        <h2>New Internship Application</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Portfolio URL:</strong> ${portfolioUrl || "N/A"}</p>
+        <hr/>
+        <h3>Cover Letter / Message:</h3>
+        <p style="white-space: pre-wrap;">${message || "N/A"}</p>
+      </div>
+    `;
+    const sendWithResend = async (from) => {
+      return await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from,
+          to: [receiverEmail],
+          reply_to: email,
+          subject: `New Internship Application from ${name}`,
+          html: htmlContent,
+          text: `Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Portfolio URL: ${portfolioUrl || "N/A"}
+
+Message:
+${message || "N/A"}`,
+          attachments: attachments.length > 0 ? attachments : void 0
+        })
+      });
+    };
+    let resendResponse = await sendWithResend(fromEmail);
+    let resendData = await resendResponse.json();
+    if (!resendResponse.ok && !fromEmail.includes("onboarding@resend.dev")) {
+      const fallbackFrom = "ESS + BROWNE <onboarding@resend.dev>";
+      const fallbackResponse = await sendWithResend(fallbackFrom);
+      if (fallbackResponse.ok) {
+        resendResponse = fallbackResponse;
+        resendData = await fallbackResponse.json();
+      }
+    }
+    if (!resendResponse.ok) {
+      console.error("Resend API error:", resendData);
+      res.status(resendResponse.status).json({
+        success: false,
+        message: resendData.message || "Failed to send email."
+      });
+      return;
+    }
+    res.status(200).json({ success: true, message: "Application submitted successfully." });
+  } catch (error) {
+    console.error("Error handling internship application:", error);
+    res.status(500).json({ success: false, message: "Failed to submit application." });
+  }
+};
+const handleCareer = async (req, res) => {
+  try {
+    const { name, email, phone, message, portfolioUrl } = req.body;
+    const file = req.file;
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY environment variable is not set.");
+      res.status(500).json({ success: false, message: "Email service is not configured. Please set RESEND_API_KEY." });
+      return;
+    }
+    const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || "info@essandbrowne.com";
+    const fromEmail = process.env.CONTACT_FROM_EMAIL || "ESS + BROWNE Careers <info@essandbrowne.com>";
+    const attachments = [];
+    if (file) {
+      attachments.push({
+        filename: file.originalname,
+        content: file.buffer.toString("base64")
+      });
+    }
+    const htmlContent = `
+      <div style="font-family: sans-serif; max-width: 600px; padding: 20px;">
+        <h2>New Career Application</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Portfolio URL:</strong> ${portfolioUrl || "N/A"}</p>
+        <hr/>
+        <h3>Cover Letter / Message:</h3>
+        <p style="white-space: pre-wrap;">${message || "N/A"}</p>
+      </div>
+    `;
+    const sendWithResend = async (from) => {
+      return await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from,
+          to: [receiverEmail],
+          reply_to: email,
+          subject: `New Career Application from ${name}`,
+          html: htmlContent,
+          text: `Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Portfolio URL: ${portfolioUrl || "N/A"}
+
+Message:
+${message || "N/A"}`,
+          attachments: attachments.length > 0 ? attachments : void 0
+        })
+      });
+    };
+    let resendResponse = await sendWithResend(fromEmail);
+    let resendData = await resendResponse.json();
+    if (!resendResponse.ok && !fromEmail.includes("onboarding@resend.dev")) {
+      const fallbackFrom = "ESS + BROWNE <onboarding@resend.dev>";
+      const fallbackResponse = await sendWithResend(fallbackFrom);
+      if (fallbackResponse.ok) {
+        resendResponse = fallbackResponse;
+        resendData = await fallbackResponse.json();
+      }
+    }
+    if (!resendResponse.ok) {
+      console.error("Resend API error:", resendData);
+      res.status(resendResponse.status).json({
+        success: false,
+        message: resendData.message || "Failed to send email."
+      });
+      return;
+    }
+    res.status(200).json({ success: true, message: "Application submitted successfully." });
+  } catch (error) {
+    console.error("Error handling career application:", error);
+    res.status(500).json({ success: false, message: "Failed to submit application." });
+  }
+};
 function createServer() {
   const app2 = express__default();
+  const upload = multer({ storage: multer.memoryStorage() });
   app2.use(cors());
   app2.use(express__default.json());
   app2.use(express__default.urlencoded({ extended: true }));
@@ -151,6 +311,8 @@ function createServer() {
   });
   app2.get("/api/demo", handleDemo);
   app2.post("/api/contact", handleContact);
+  app2.post("/api/internship", upload.single("portfolioFile"), handleInternship);
+  app2.post("/api/career", upload.single("portfolioFile"), handleCareer);
   return app2;
 }
 const app = createServer();
