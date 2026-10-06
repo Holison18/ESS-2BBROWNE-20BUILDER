@@ -66,11 +66,11 @@ export default function Header() {
                         <Link to="/portfolio" className={`${linkBaseClasses} ${hoverClass} ${location.pathname === "/portfolio" ? "text-orange" : ""}`}>
                             PORTFOLIO
                         </Link>
-                        <Link to="/contact" className={`${linkBaseClasses} ${hoverClass} ${location.pathname === "/contact" ? "text-orange" : ""}`}>
-                            CONTACT
-                        </Link>
                         <Link to="/careers" className={`${linkBaseClasses} ${hoverClass} ${location.pathname === "/careers" ? "text-orange" : ""}`}>
                             CAREERS
+                        </Link>
+                        <Link to="/contact" className={`nav-contact-btn ${location.pathname === "/contact" ? "active" : ""}`}>
+                            CONTACT
                         </Link>
                     </div>
 
@@ -123,18 +123,18 @@ export default function Header() {
                             Portfolio
                         </Link>
                         <Link
-                            to="/contact"
-                            className="font-outfit text-2xl text-black hover:text-orange font-bold uppercase tracking-widest"
-                            onClick={closeMenu}
-                        >
-                            Contact
-                        </Link>
-                        <Link
                             to="/careers"
                             className="font-outfit text-2xl text-black hover:text-orange font-bold uppercase tracking-widest"
                             onClick={closeMenu}
                         >
                             Careers
+                        </Link>
+                        <Link
+                            to="/contact"
+                            className="nav-contact-btn font-outfit text-2xl font-bold uppercase tracking-widest"
+                            onClick={closeMenu}
+                        >
+                            Contact
                         </Link>
                     </motion.div>
                 )}

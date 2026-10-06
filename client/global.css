@@ -126,4 +126,45 @@
   .main-footer {
     background-color: #151515;
   }
+
+  .nav-contact-btn {
+    position: relative;
+    overflow: hidden;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.4s ease;
+    z-index: 1;
+  }
+
+  .nav-contact-btn::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #F79723; /* tailwind orange */
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1;
+    border-radius: 50% 50% 0 0;
+  }
+
+  .nav-contact-btn:hover::before {
+    height: 150%;
+    border-radius: 0;
+  }
+
+  .nav-contact-btn.active,
+  .nav-contact-btn:hover {
+    color: #ffffff;
+  }
+  
+  .nav-contact-btn.active::before {
+    height: 100%;
+    border-radius: 0;
+  }
 }
